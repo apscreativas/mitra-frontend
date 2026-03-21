@@ -1,0 +1,76 @@
+'use client'
+
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { mapApiErrors } from '@/lib/forms'
+import { labels } from '@/lib/labels'
+import { {{entityName}}Schema, type {{EntityName}}FormValues } from '../schemas'
+import { useCreate{{EntityName}}, useUpdate{{EntityName}} } from '../hooks'
+import type { {{EntityName}}FormProps } from '../types'
+
+export function {{EntityName}}Form({ defaultValues, {{entityName}}Id, mode }: {{EntityName}}FormProps) {
+  const router = useRouter()
+  const createMutation = useCreate{{EntityName}}()
+  const updateMutation = useUpdate{{EntityName}}({{entityName}}Id ?? '')
+
+  const form = useForm<{{EntityName}}FormValues, unknown, {{EntityName}}FormValues>({
+    resolver: zodResolver({{entityName}}Schema),
+    defaultValues: (defaultValues ?? {
+      name: '',
+      // TODO: Add remaining default values
+    }) as Partial<{{EntityName}}FormValues>,
+  })
+
+  async function onSubmit(values: {{EntityName}}FormValues) {
+    try {
+      if (mode === 'edit' && {{entityName}}Id) {
+        await updateMutation.mutateAsync(values)
+        // TODO: Add module-specific labels to lib/labels.ts
+        toast.success(labels.common.success)
+      } else {
+        await createMutation.mutateAsync(values)
+        toast.success(labels.common.success)
+      }
+      router.push('/{{entitiesName}}')
+    } catch (error) {
+      mapApiErrors(error, form.setError)
+    }
+  }
+
+  const isPending = createMutation.isPending || updateMutation.isPending
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              {/* TODO: Add module-specific field labels to lib/labels.ts */}
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* TODO: Add remaining fields */}
+        <div className="flex gap-2">
+          <Button type="submit" disabled={isPending}>
+            {mode === 'edit' ? labels.common.save : labels.common.create}
+          </Button>
+          <Button type="button" variant="outline" onClick={() => router.back()}>
+            {labels.common.cancel}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  )
+}

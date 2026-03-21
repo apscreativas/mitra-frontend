@@ -1,0 +1,39 @@
+'use client'
+
+import type { ColumnDef } from '@tanstack/react-table'
+import type { {{EntityName}} } from '../types'
+import { Badge } from '@/components/ui/badge'
+import { ActionsDropdown } from '@/components/ui/actions-dropdown'
+
+// TODO: Define module-specific labels in lib/labels.ts under labels.{{moduleName}}
+// including fields and statuses sections
+
+export const columns: ColumnDef<{{EntityName}}>[] = [
+  {
+    accessorKey: 'name',
+    // TODO: header: labels.{{moduleName}}.fields.name,
+    header: 'Name',
+  },
+  // TODO: Add remaining columns
+  {
+    accessorKey: 'status',
+    // TODO: header: labels.{{moduleName}}.fields.status,
+    header: 'Status',
+    cell: ({ row }) => (
+      <Badge variant={row.original.status === 'active' ? 'default' : 'secondary'}>
+        {row.original.status === 'active' ? 'Active' : 'Inactive'}
+      </Badge>
+    ),
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => (
+      <ActionsDropdown
+        viewHref={`/{{entitiesName}}/${row.original.id}`}
+        editHref={`/{{entitiesName}}/${row.original.id}/edit`}
+        viewPermission="{{moduleName}}.view"
+        editPermission="{{moduleName}}.update"
+      />
+    ),
+  },
+]

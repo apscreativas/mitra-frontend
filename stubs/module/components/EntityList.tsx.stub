@@ -1,0 +1,70 @@
+'use client'
+
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import { DataTable } from '@/components/ui/data-table'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Plus } from 'lucide-react'
+import { columns } from './columns'
+import { use{{EntityName}}s } from '../hooks'
+import { labels } from '@/lib/labels'
+import { LoadingState, EmptyState, ErrorState } from '@/components/ui/states'
+import type { {{EntityName}}ListParams } from '../types'
+
+export function {{EntityName}}List() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const params: {{EntityName}}ListParams = {
+    search: searchParams.get('search') ?? undefined,
+    status: searchParams.get('status') ?? undefined,
+    page: Number(searchParams.get('page') ?? 1),
+    per_page: 15,
+  }
+
+  const { data, isLoading, isError, error } = use{{EntityName}}s(params)
+
+  function updateParams(updates: Partial<{{EntityName}}ListParams>) {
+    const next = new URLSearchParams(searchParams.toString())
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value) next.set(key, String(value))
+      else next.delete(key)
+    })
+    next.set('page', '1')
+    router.push(`${pathname}?${next.toString()}`)
+  }
+
+  if (isLoading) return <LoadingState />
+  if (isError) return <ErrorState error={error} />
+  if (!data?.data.length) return <EmptyState />
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        {/* TODO: Add module-specific title and create label to lib/labels.ts */}
+        <h1 className="text-2xl font-bold">{{EntityName}}s</h1>
+        <Button onClick={() => router.push('/{{entitiesName}}/new')}>
+          <Plus className="mr-2 h-4 w-4" />
+          {labels.common.create}
+        </Button>
+      </div>
+      <Input
+        placeholder={labels.common.search}
+        defaultValue={params.search}
+        onChange={(e) => updateParams({ search: e.target.value || undefined })}
+      />
+      <DataTable
+        columns={columns}
+        data={data.data}
+        isLoading={isLoading}
+        pagination={data.meta}
+        onFiltersChange={(filters: Record<string, unknown>) => {
+          Object.entries(filters).forEach(([key, value]) => {
+            updateParams({ [key]: value } as Partial<{{EntityName}}ListParams>)
+          })
+        }}
+      />
+    </div>
+  )
+}

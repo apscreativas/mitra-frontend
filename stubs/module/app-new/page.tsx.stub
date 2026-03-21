@@ -1,0 +1,5 @@
+import { {{EntityName}}Form } from '@/modules/{{moduleName}}/components/{{EntityName}}Form'
+
+export default function New{{EntityName}}Page() {
+  return <{{EntityName}}Form mode="create" />
+}

@@ -1,0 +1,49 @@
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { {{EntityName}}List } from './{{EntityName}}List'
+
+function withData(data: unknown[], total = data.length) {
+  return function Decorator(Story: React.ComponentType) {
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    })
+    qc.setQueryData(['{{entitiesName}}', 'list', {}], {
+      data,
+      meta: { current_page: 1, last_page: 1, per_page: 15, total },
+    })
+    return (
+      <QueryClientProvider client={qc}>
+        <Story />
+      </QueryClientProvider>
+    )
+  }
+}
+
+const mock = {
+  id: '1',
+  name: 'Test',
+  status: 'active',
+  created_at: '2024-01-01',
+  updated_at: '2024-01-01',
+}
+
+const meta: Meta<typeof {{EntityName}}List> = {
+  title: '{{ModuleName}}/{{EntityName}}List',
+  component: {{EntityName}}List,
+  parameters: { nextjs: { appDirectory: true } },
+}
+
+export default meta
+type Story = StoryObj<typeof {{EntityName}}List>
+
+export const Default: Story = {
+  decorators: [
+    withData([mock, { ...mock, id: '2', name: 'Second' }], 2),
+  ],
+}
+
+export const Empty: Story = {
+  decorators: [withData([])],
+}
+
+export const Loading: Story = {}

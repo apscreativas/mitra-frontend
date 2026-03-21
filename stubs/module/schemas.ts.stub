@@ -1,0 +1,12 @@
+import { z } from 'zod'
+
+// TODO: Use labels from lib/labels.ts for validation messages
+// Example: import { labels } from '@/lib/labels'
+//          z.string().min(1, labels.{{moduleName}}.fields.name + ' is required')
+
+export const {{entityName}}Schema = z.object({
+  name: z.string().min(1, 'Name is required').max(255),
+  // TODO: Add remaining validation rules
+})
+
+export type {{EntityName}}FormValues = z.infer<typeof {{entityName}}Schema>

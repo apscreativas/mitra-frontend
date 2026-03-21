@@ -1,0 +1,24 @@
+'use client'
+
+import { useUser } from '@/lib/auth'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+
+export default function LoginLayout({ children }: { children: React.ReactNode }) {
+  const { data: user, isLoading } = useUser()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (user && !isLoading) {
+      router.replace('/users')
+    }
+  }, [user, isLoading, router])
+
+  if (isLoading) return null
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-muted/40">
+      {children}
+    </div>
+  )
+}

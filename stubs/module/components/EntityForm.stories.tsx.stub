@@ -1,0 +1,25 @@
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
+import { expect, userEvent, within } from '@storybook/test'
+import { {{EntityName}}Form } from './{{EntityName}}Form'
+
+const meta: Meta<typeof {{EntityName}}Form> = {
+  title: '{{ModuleName}}/{{EntityName}}Form',
+  component: {{EntityName}}Form,
+  parameters: { nextjs: { appDirectory: true } },
+}
+
+export default meta
+type Story = StoryObj<typeof {{EntityName}}Form>
+
+export const Default: Story = {}
+
+export const WithError: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const submit = canvas.getByRole('button', { name: /create/i })
+    await userEvent.click(submit)
+    await expect(
+      canvas.findByText(/name is required/i),
+    ).resolves.toBeInTheDocument()
+  },
+}

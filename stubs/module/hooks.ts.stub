@@ -1,0 +1,42 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { {{entityName}}Keys, get{{EntityName}}s, get{{EntityName}}, create{{EntityName}}, update{{EntityName}} } from './api'
+import type { {{EntityName}}ListParams } from './types'
+import type { {{EntityName}}FormValues } from './schemas'
+
+export function use{{EntityName}}s(params: {{EntityName}}ListParams) {
+  return useQuery({
+    queryKey: {{entityName}}Keys.list(params),
+    queryFn: () => get{{EntityName}}s(params),
+  })
+}
+
+export function use{{EntityName}}(id: string) {
+  return useQuery({
+    queryKey: {{entityName}}Keys.detail(id),
+    queryFn: () => get{{EntityName}}(id),
+    enabled: !!id,
+  })
+}
+
+export function useCreate{{EntityName}}() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: create{{EntityName}},
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: {{entityName}}Keys.lists() })
+    },
+  })
+}
+
+export function useUpdate{{EntityName}}(id: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: Partial<{{EntityName}}FormValues>) => update{{EntityName}}(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: {{entityName}}Keys.lists() })
+      queryClient.invalidateQueries({ queryKey: {{entityName}}Keys.detail(id) })
+    },
+  })
+}

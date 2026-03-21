@@ -1,0 +1,10 @@
+import { Suspense } from 'react'
+import { {{EntityName}}List } from '@/modules/{{moduleName}}/components/{{EntityName}}List'
+
+export default function {{EntityName}}sPage() {
+  return (
+    <Suspense>
+      <{{EntityName}}List />
+    </Suspense>
+  )
+}

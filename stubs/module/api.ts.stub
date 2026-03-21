@@ -1,0 +1,29 @@
+import { httpClient } from '@/lib/http-client'
+import type { {{EntityName}}, {{EntityName}}ListParams } from './types'
+import type { {{EntityName}}FormValues } from './schemas'
+import type { PaginatedResponse } from '@/lib/types'
+
+// Query key factory — all module queries use these keys
+export const {{entityName}}Keys = {
+  all: ['{{entitiesName}}'] as const,
+  lists: () => [...{{entityName}}Keys.all, 'list'] as const,
+  list: (params: {{EntityName}}ListParams) => [...{{entityName}}Keys.lists(), params] as const,
+  details: () => [...{{entityName}}Keys.all, 'detail'] as const,
+  detail: (id: string) => [...{{entityName}}Keys.details(), id] as const,
+}
+
+export async function get{{EntityName}}s(params: {{EntityName}}ListParams): Promise<PaginatedResponse<{{EntityName}}>> {
+  return httpClient.get('/api/{{entitiesName}}', { params: params as Record<string, unknown> })
+}
+
+export async function get{{EntityName}}(id: string): Promise<{{EntityName}}> {
+  return httpClient.get(`/api/{{entitiesName}}/${id}`)
+}
+
+export async function create{{EntityName}}(data: {{EntityName}}FormValues): Promise<{{EntityName}}> {
+  return httpClient.post('/api/{{entitiesName}}', data)
+}
+
+export async function update{{EntityName}}(id: string, data: Partial<{{EntityName}}FormValues>): Promise<{{EntityName}}> {
+  return httpClient.put(`/api/{{entitiesName}}/${id}`, data)
+}
