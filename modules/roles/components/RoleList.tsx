@@ -9,10 +9,11 @@ import { columns } from './columns'
 import type { RoleListParams } from '../types'
 
 interface RoleListProps {
+  onView?: (id: string) => void
   onEdit?: (id: string) => void
 }
 
-export function RoleList({ onEdit }: RoleListProps) {
+export function RoleList({ onView, onEdit }: RoleListProps) {
   const {
     sorting,
     columnFilters,
@@ -46,7 +47,7 @@ export function RoleList({ onEdit }: RoleListProps) {
           onColumnFilterChange={onColumnFilterChange}
           onPageChange={onPageChange}
           onPerPageChange={onPerPageChange}
-          meta={{ onEdit }}
+          meta={{ onView, onEdit }}
         />
       )}
     </div>

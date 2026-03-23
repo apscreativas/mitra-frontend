@@ -185,6 +185,9 @@ export const labels = {
       usersCount: 'Usuarios',
       permissionsCount: 'Permisos',
     },
+    sections: {
+      info: 'Información',
+    },
   },
   permissions: {
     title: 'Permisos',
