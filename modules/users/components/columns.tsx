@@ -61,13 +61,21 @@ export const columns: ColumnDef<User>[] = [
   {
     id: 'actions',
     enableSorting: false,
-    cell: ({ row, table }) => (
-      <ActionsDropdown
-        viewHref={`/users/${row.original.id}`}
-        onEdit={() => (table.options.meta as { onEdit?: (id: string) => void })?.onEdit?.(row.original.id)}
-        viewPermission="users.view"
-        editPermission="users.update"
-      />
-    ),
+    cell: ({ row, table }) => {
+      const meta = table.options.meta as {
+        onView?: (id: string) => void
+        onEdit?: (id: string) => void
+      } | undefined
+      return (
+        <ActionsDropdown
+          onView={() => meta?.onView?.(row.original.id)}
+          onEdit={() => meta?.onEdit?.(row.original.id)}
+          detailHref={`/users/${row.original.id}`}
+          viewPermission="users.view"
+          editPermission="users.update"
+          detailPermission="users.view"
+        />
+      )
+    },
   },
 ]
