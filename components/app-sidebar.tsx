@@ -19,6 +19,7 @@ import {
   Shield,
   SlidersHorizontal,
   LogOut,
+  Briefcase,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -79,6 +80,12 @@ const navGroups: NavGroup[] = [
       { href: '/contpaqi', label: labels.nav.contpaqi, icon: Calculator },
       { href: '/cxc', label: labels.nav.accountsReceivable, icon: ArrowUpRight },
       { href: '/cxp', label: labels.nav.accountsPayable, icon: ArrowDownLeft },
+    ],
+  },
+  {
+    label: labels.nav.humanResources,
+    items: [
+      { href: '/rrhh', label: labels.nav.rrhh, icon: Briefcase, permission: 'rrhh.view' },
     ],
   },
   {
