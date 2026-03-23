@@ -163,17 +163,29 @@ Base UI is the successor to Radix (same team), but the API is different. Common 
 
 When using `<Button>` with a non-`<button>` element (like `<Link>`), you MUST pass `nativeButton={false}` to avoid the Base UI warning about native button semantics.
 
+## Server-Side Tables
+
+Every list/table MUST use server-side filtering, sorting, and pagination. The client NEVER filters, sorts, or paginates data in memory.
+
+- **Hook:** `useTableParams` (`lib/use-table-params.ts`) syncs all table state (filters, sort, page, per_page) to URL search params. Use it in every list component.
+- **DataTable:** Column `meta.filterType` (`'text'` | `'select'`) enables per-column filter inputs. Column `id` maps to the backend filter/sort key. Set `enableSorting: false` on non-sortable columns (relationships, actions).
+- **URL params:** `filter[col]=value`, `sort=col` / `sort=-col`, `page=N`, `per_page=N`. Changing a filter or sort resets page to 1. Empty filters are removed from URL.
+- **Select filter options:** Fetched in the `app/` page component and passed as props to avoid cross-module imports in `modules/`.
+- **Backend contract:** Spatie QueryBuilder expects `filter[key]=value` and `sort=key`. Use `AllowedFilter::partial()` for text, `AllowedFilter::exact()` for enums/IDs, `AllowedFilter::callback()` for relationships.
+
 ## Rules
 
 **All patterns, conventions, and naming rules are defined in `ARCHITECTURE.md`.** Read it before creating or modifying any file. The rules below are operational supplements.
 
 - **ARCHITECTURE.md is the source of truth.** No exceptions.
+- **DESIGN_SYSTEM.md is the visual source of truth.** Read it before writing ANY UI code. Design must be minimalist and consistent — no generic AI aesthetics. Use semantic tokens (`text-foreground`, `bg-muted`, `bg-primary`), never hardcoded colors. Cards use `ring-1 ring-foreground/10`, not `shadow`.
+- **Consult library docs before implementing.** Never assume APIs from memory. Use Context7 or official docs for TanStack Table, TanStack Query, Base UI, and any other library.
 - **Files:** kebab-case. **Components:** PascalCase. **Hooks:** camelCase with `use` prefix.
 - **TypeScript strict.** Never `any`. IDs = `string`. Timestamps = `string`.
 - **Forms:** Zod schema → RHF `useForm` → shadcn `FormField` → `mutateAsync` + `mapApiErrors`. One form for create AND edit.
 - **Labels:** `lib/labels.ts`. Never hardcode user-facing text.
 - **No barrel exports.** No `index.ts` re-exports.
-- **Modules don't cross-import** (except via `types.ts`).
+- **Modules don't cross-import** (except via `types.ts`). Cross-module data (e.g. role options for a user filter) is fetched in `app/` and passed as props.
 
 ## API Types
 
