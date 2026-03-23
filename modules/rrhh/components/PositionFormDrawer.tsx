@@ -47,12 +47,12 @@ export function PositionFormDrawer({ open, onOpenChange, mode, positionId }: Pos
               isEdit && position
                 ? {
                     name: position.name,
-                    area_id: position.area_id,
+                    area_id: String(position.area_id),
                     authorized_positions: position.authorized_positions,
-                    reports_to_id: position.reports_to_id,
+                    reports_to_id: position.reports_to_id ? String(position.reports_to_id) : null,
                     status: position.status,
                     documents: position.documents.map((d) => ({
-                      document_id: d.document_id,
+                      document_id: String(d.document_id),
                       is_required: d.is_required,
                     })),
                   }
