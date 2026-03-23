@@ -104,21 +104,13 @@ Connects `api.ts` to React via TanStack Query. No business logic, no data transf
 
 ```typescript
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { productKeys, getProducts, getProduct, createProduct, updateProduct } from "./api";
+import { productKeys, getProducts, createProduct } from "./api";
 import type { ProductListParams } from "./types";
 
 export function useProducts(params: ProductListParams) {
   return useQuery({
     queryKey: productKeys.list(params),
     queryFn: () => getProducts(params),
-  });
-}
-
-export function useProduct(id: string) {
-  return useQuery({
-    queryKey: productKeys.detail(id),
-    queryFn: () => getProduct(id),
-    enabled: !!id,
   });
 }
 
@@ -132,16 +124,7 @@ export function useCreateProduct() {
   });
 }
 
-export function useUpdateProduct(id: string) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: UpdateProductInput) => updateProduct(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: productKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: productKeys.detail(id) });
-    },
-  });
-}
+// useProduct(id) and useUpdateProduct(id) follow the same patterns
 ```
 
 ### `schemas.ts` — Zod Schemas for Forms
@@ -206,8 +189,6 @@ export function ProductForm({ defaultValues, productId, mode }: ProductFormProps
     }
   }
 
-  const isPending = createMutation.isPending || updateMutation.isPending;
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -217,15 +198,13 @@ export function ProductForm({ defaultValues, productId, mode }: ProductFormProps
           render={({ field }) => (
             <FormItem>
               <FormLabel>{labels.products.fields.name}</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
+              <FormControl><Input {...field} /></FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        {/* More fields follow the same pattern */}
-        <Button type="submit" disabled={isPending}>
+        {/* Repeat FormField pattern for each field */}
+        <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
           {mode === "edit" ? labels.common.save : labels.products.create}
         </Button>
       </form>
@@ -270,7 +249,7 @@ export function ProductList() {
       if (value) next.set(key, String(value));
       else next.delete(key);
     });
-    next.set("page", "1"); // Reset page on filter change
+    next.set("page", "1");
     router.push(`${pathname}?${next.toString()}`);
   }
 
@@ -285,9 +264,7 @@ export function ProductList() {
         defaultValue={params.search}
         onChange={(e) => updateParams({ search: e.target.value || undefined })}
       />
-      <DataTable
-        columns={columns}
-        data={data.data}
+      <DataTable columns={columns} data={data.data}
         pageCount={Math.ceil(data.meta.total / data.meta.per_page)}
         currentPage={data.meta.current_page}
         onPageChange={(page) => updateParams({ page })}
@@ -309,14 +286,8 @@ import { labels } from "@/lib/labels";
 import type { Product } from "../types";
 
 export const columns: ColumnDef<Product>[] = [
-  {
-    accessorKey: "name",
-    header: labels.products.fields.name,
-  },
-  {
-    accessorKey: "sku",
-    header: labels.products.fields.sku,
-  },
+  { accessorKey: "name", header: labels.products.fields.name },
+  { accessorKey: "sku", header: labels.products.fields.sku },
   {
     accessorKey: "status",
     header: labels.products.fields.status,
@@ -462,6 +433,19 @@ Standard UI states used across all modules:
 | IDs | Always `string`. Never `number`. |
 | Timestamps | Always `string`. |
 | TypeScript | Strict mode. Never `any`. |
+
+### Naming Conventions
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| API functions | `get{Entity}s`, `create{Entity}` | `getProducts`, `createProduct` |
+| Query keys | `{entity}Keys.all`, `.list()`, `.detail(id)` | `productKeys.list(params)` |
+| Hooks | `use{Entity}s`, `use{Action}{Entity}` | `useProducts`, `useCreateProduct` |
+| Components | PascalCase | `ProductList`, `ProductForm` |
+| Test files | `{mod}.test.ts` | `products.test.ts` |
+| Story files | `{Component}.stories.tsx` | `ProductForm.stories.tsx` |
+| Schemas | `{entity}Schema` | `productSchema` |
+| Form values | `{Entity}FormValues` | `ProductFormValues` |
 
 ---
 
