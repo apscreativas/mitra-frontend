@@ -11,17 +11,17 @@ export const positionKeys = {
 }
 
 export async function getPositions(params?: PositionListParams): Promise<PaginatedResponse<Position>> {
-  return httpClient.get('/api/rrhh/positions', { params: params as Record<string, unknown> })
+  return httpClient.get('/rrhh/positions', { params: params as Record<string, unknown> })
 }
 
 export async function getPosition(id: string): Promise<{ data: Position }> {
-  return httpClient.get(`/api/rrhh/positions/${id}`)
+  return httpClient.get(`/rrhh/positions/${id}`)
 }
 
 export async function createPosition(data: CreatePositionInput): Promise<{ data: Position }> {
-  return httpClient.post('/api/rrhh/positions', data)
+  return httpClient.post('/rrhh/positions', data)
 }
 
 export async function updatePosition(id: string, data: UpdatePositionInput): Promise<{ data: Position }> {
-  return httpClient.put(`/api/rrhh/positions/${id}`, data)
+  return httpClient.put(`/rrhh/positions/${id}`, data)
 }

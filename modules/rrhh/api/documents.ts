@@ -11,17 +11,17 @@ export const documentKeys = {
 }
 
 export async function getDocuments(params?: DocumentListParams): Promise<PaginatedResponse<Document>> {
-  return httpClient.get('/api/rrhh/documents', { params: params as Record<string, unknown> })
+  return httpClient.get('/rrhh/documents', { params: params as Record<string, unknown> })
 }
 
 export async function getDocument(id: string): Promise<{ data: Document }> {
-  return httpClient.get(`/api/rrhh/documents/${id}`)
+  return httpClient.get(`/rrhh/documents/${id}`)
 }
 
 export async function createDocument(data: CreateDocumentInput): Promise<{ data: Document }> {
-  return httpClient.post('/api/rrhh/documents', data)
+  return httpClient.post('/rrhh/documents', data)
 }
 
 export async function updateDocument(id: string, data: UpdateDocumentInput): Promise<{ data: Document }> {
-  return httpClient.put(`/api/rrhh/documents/${id}`, data)
+  return httpClient.put(`/rrhh/documents/${id}`, data)
 }

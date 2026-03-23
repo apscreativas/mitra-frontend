@@ -7,5 +7,5 @@ export const rrhhStatsKeys = {
 }
 
 export async function getRrhhStats(): Promise<{ data: RrhhStats }> {
-  return httpClient.get('/api/rrhh/stats')
+  return httpClient.get('/rrhh/stats')
 }
