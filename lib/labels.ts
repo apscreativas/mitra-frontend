@@ -23,6 +23,9 @@ export const labels = {
     filters: 'Filtros',
     appName: 'Skeleton',
     selected: 'Seleccionado',
+    drawer: {
+      close: 'Cerrar',
+    },
   },
   nav: {
     general: 'General',

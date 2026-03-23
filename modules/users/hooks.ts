@@ -18,10 +18,11 @@ export function useUsers(params?: UserListParams) {
   })
 }
 
-export function useUser(id: string) {
+export function useUser(id: string, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: userKeys.detail(id),
     queryFn: () => getUser(id),
+    enabled: options?.enabled ?? true,
   })
 }
 

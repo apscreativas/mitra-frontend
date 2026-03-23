@@ -48,6 +48,7 @@ interface DataTableProps<TData, TValue> {
   filterOptions?: Record<string, { label: string; value: string }[]>
   onPageChange?: (page: number) => void
   onPerPageChange?: (perPage: number) => void
+  meta?: Record<string, unknown>
 }
 
 const ALL_VALUE = '__all__'
@@ -65,6 +66,7 @@ export function DataTable<TData, TValue>({
   filterOptions = {},
   onPageChange,
   onPerPageChange,
+  meta,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -74,6 +76,7 @@ export function DataTable<TData, TValue>({
     enableMultiSort: false,
     state: { sorting },
     onSortingChange,
+    meta,
   })
 
   if (isLoading) {

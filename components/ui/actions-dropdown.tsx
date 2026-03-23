@@ -15,6 +15,7 @@ import { labels } from '@/lib/labels'
 interface ActionsDropdownProps {
   viewHref?: string
   editHref?: string
+  onEdit?: () => void
   viewPermission?: string
   editPermission?: string
 }
@@ -22,13 +23,14 @@ interface ActionsDropdownProps {
 export function ActionsDropdown({
   viewHref,
   editHref,
+  onEdit,
   viewPermission,
   editPermission,
 }: ActionsDropdownProps) {
   const { can } = usePermissions()
 
   const showView = viewHref && (!viewPermission || can(viewPermission))
-  const showEdit = editHref && (!editPermission || can(editPermission))
+  const showEdit = (editHref || onEdit) && (!editPermission || can(editPermission))
 
   if (!showView && !showEdit) return null
 
@@ -48,7 +50,12 @@ export function ActionsDropdown({
             {labels.common.view}
           </DropdownMenuItem>
         )}
-        {showEdit && (
+        {showEdit && onEdit && (
+          <DropdownMenuItem onClick={onEdit}>
+            {labels.common.edit}
+          </DropdownMenuItem>
+        )}
+        {showEdit && !onEdit && editHref && (
           <DropdownMenuItem render={<Link href={editHref!} />}>
             {labels.common.edit}
           </DropdownMenuItem>
