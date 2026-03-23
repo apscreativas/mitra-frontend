@@ -1,11 +1,18 @@
 'use client'
 
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
+import { Lock, Eye, EyeOff, KeyRound } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupButton,
+} from '@/components/ui/input-group'
 import {
   Form,
   FormControl,
@@ -14,7 +21,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { mapApiErrors } from '@/lib/forms'
 import { labels } from '@/lib/labels'
 import { useResetPassword } from '../hooks'
@@ -24,6 +30,8 @@ export function ResetPasswordForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const resetPassword = useResetPassword()
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
 
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
@@ -46,45 +54,102 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>{labels.auth.resetPassword}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{labels.auth.newPassword}</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password_confirmation"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{labels.auth.confirmPassword}</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full" disabled={resetPassword.isPending}>
-              {resetPassword.isPending ? labels.common.loading : labels.auth.resetPassword}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* New password */}
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-semibold text-foreground/80 px-1">
+                {labels.auth.newPassword}
+              </FormLabel>
+              <FormControl>
+                <InputGroup className="h-14 rounded-xl">
+                  <InputGroupAddon>
+                    <Lock className="size-5 text-muted-foreground" />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="new-password"
+                    placeholder="••••••••"
+                    className="h-14"
+                    {...field}
+                  />
+                  <InputGroupAddon align="inline-end">
+                    <InputGroupButton
+                      size="icon-xs"
+                      variant="ghost"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="size-5 text-muted-foreground" />
+                      ) : (
+                        <Eye className="size-5 text-muted-foreground" />
+                      )}
+                    </InputGroupButton>
+                  </InputGroupAddon>
+                </InputGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Confirm password */}
+        <FormField
+          control={form.control}
+          name="password_confirmation"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-semibold text-foreground/80 px-1">
+                {labels.auth.confirmPassword}
+              </FormLabel>
+              <FormControl>
+                <InputGroup className="h-14 rounded-xl">
+                  <InputGroupAddon>
+                    <Lock className="size-5 text-muted-foreground" />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    type={showConfirm ? 'text' : 'password'}
+                    autoComplete="new-password"
+                    placeholder="••••••••"
+                    className="h-14"
+                    {...field}
+                  />
+                  <InputGroupAddon align="inline-end">
+                    <InputGroupButton
+                      size="icon-xs"
+                      variant="ghost"
+                      onClick={() => setShowConfirm(!showConfirm)}
+                      aria-label={showConfirm ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                    >
+                      {showConfirm ? (
+                        <EyeOff className="size-5 text-muted-foreground" />
+                      ) : (
+                        <Eye className="size-5 text-muted-foreground" />
+                      )}
+                    </InputGroupButton>
+                  </InputGroupAddon>
+                </InputGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full h-14 font-headline font-bold rounded-xl shadow-lg shadow-primary/20 text-base gap-2"
+          disabled={resetPassword.isPending}
+        >
+          <span>{resetPassword.isPending ? labels.common.loading : labels.auth.resetPassword}</span>
+          <KeyRound className="size-5" />
+        </Button>
+      </form>
+    </Form>
   )
 }

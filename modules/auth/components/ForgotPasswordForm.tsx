@@ -3,8 +3,13 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
+import { Mail, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '@/components/ui/input-group'
 import {
   Form,
   FormControl,
@@ -13,7 +18,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { mapApiErrors } from '@/lib/forms'
 import { labels } from '@/lib/labels'
 import { useForgotPassword } from '../hooks'
@@ -37,33 +41,45 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>{labels.auth.forgotPassword}</CardTitle>
-        <CardDescription>{labels.auth.resetSent}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{labels.auth.email}</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full" disabled={forgotPassword.isPending}>
-              {forgotPassword.isPending ? labels.common.loading : labels.auth.sendResetLink}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-semibold text-foreground/80 px-1">
+                {labels.auth.email}
+              </FormLabel>
+              <FormControl>
+                <InputGroup className="h-14 rounded-xl">
+                  <InputGroupAddon>
+                    <Mail className="size-5 text-muted-foreground" />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    type="email"
+                    autoComplete="email"
+                    placeholder={labels.auth.emailPlaceholder}
+                    className="h-14"
+                    {...field}
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full h-14 font-headline font-bold rounded-xl shadow-lg shadow-primary/20 text-base gap-2"
+          disabled={forgotPassword.isPending}
+        >
+          <span>{forgotPassword.isPending ? labels.common.loading : labels.auth.sendResetLink}</span>
+          <Send className="size-5" />
+        </Button>
+      </form>
+    </Form>
   )
 }

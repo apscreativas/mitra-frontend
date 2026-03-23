@@ -1,9 +1,27 @@
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 import { ResetPasswordForm } from '@/modules/auth/components/ResetPasswordForm'
+import { AuthShell } from '@/modules/auth/components/AuthShell'
+import { labels } from '@/lib/labels'
 
 export default function ResetPasswordPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/40">
+    <AuthShell
+      title={labels.auth.resetPassword}
+      subtitle={labels.auth.resetPasswordSubtitle}
+      footer={
+        <div className="flex justify-center">
+          <Link
+            href="/login"
+            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+          >
+            <ArrowLeft className="size-4" />
+            {labels.auth.backToLogin}
+          </Link>
+        </div>
+      }
+    >
       <ResetPasswordForm />
-    </div>
+    </AuthShell>
   )
 }
