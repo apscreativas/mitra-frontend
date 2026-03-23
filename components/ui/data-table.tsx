@@ -1,10 +1,30 @@
 'use client'
 
-import { type ColumnDef, type SortingState, type OnChangeFn, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  type ColumnDef,
+  type SortingState,
+  type OnChangeFn,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DebouncedInput } from '@/components/ui/debounced-input'
 import { labels } from '@/lib/labels'
@@ -58,41 +78,50 @@ export function DataTable<TData, TValue>({
 
   if (isLoading) {
     return (
-      <div className="space-y-3">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-10 w-full" />
+      <div className="space-y-px rounded-xl ring-1 ring-foreground/10 overflow-hidden">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Skeleton
+            key={i}
+            className={`h-9 w-full rounded-none ${i === 0 ? 'bg-muted/60' : ''}`}
+          />
         ))}
       </div>
     )
   }
 
+  const hasFilters = columns.some((c) => c.meta?.filterType)
+
   return (
-    <div>
-      <div className="rounded-md border">
+    <div className="space-y-3">
+      <div className="rounded-xl ring-1 ring-foreground/10 overflow-hidden">
         <Table>
           <TableHeader>
-            {/* Header row: column names + sort indicators */}
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="border-b-foreground/10 bg-muted/40 hover:bg-muted/40">
                 {headerGroup.headers.map((header) => {
                   const canSort = header.column.getCanSort()
                   const sorted = header.column.getIsSorted()
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className="h-9 text-xs font-medium text-muted-foreground tracking-wide uppercase"
+                    >
                       {header.isPlaceholder ? null : canSort ? (
                         <button
                           type="button"
-                          className="flex items-center gap-1 hover:text-foreground -ml-1 px-1 py-0.5 rounded transition-colors"
+                          className="group/sort inline-flex items-center gap-1 transition-colors hover:text-foreground"
                           onClick={header.column.getToggleSortingHandler()}
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
-                          {sorted === 'asc' ? (
-                            <ArrowUp className="h-3.5 w-3.5" />
-                          ) : sorted === 'desc' ? (
-                            <ArrowDown className="h-3.5 w-3.5" />
-                          ) : (
-                            <ArrowUpDown className="h-3.5 w-3.5 opacity-40" />
-                          )}
+                          <span className={`inline-flex ${sorted ? 'text-foreground' : 'opacity-0 group-hover/sort:opacity-40'} transition-opacity`}>
+                            {sorted === 'asc' ? (
+                              <ChevronUp className="size-3" />
+                            ) : sorted === 'desc' ? (
+                              <ChevronDown className="size-3" />
+                            ) : (
+                              <ChevronDown className="size-3" />
+                            )}
+                          </span>
                         </button>
                       ) : (
                         flexRender(header.column.columnDef.header, header.getContext())
@@ -103,16 +132,15 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
 
-            {/* Filter row: one input per column with filterType meta */}
-            {onColumnFilterChange && (
-              <TableRow>
+            {onColumnFilterChange && hasFilters && (
+              <TableRow className="border-b-foreground/10 hover:bg-transparent">
                 {table.getHeaderGroups()[0]?.headers.map((header) => {
                   const meta = header.column.columnDef.meta
                   const columnId = header.column.id
                   const filterValue = columnFilters[columnId] ?? ''
 
                   return (
-                    <TableHead key={`filter-${header.id}`} className="py-1 px-2">
+                    <TableHead key={`filter-${header.id}`} className="h-8 py-1 px-2">
                       {meta?.filterType === 'text' ? (
                         <DebouncedInput
                           value={filterValue}
@@ -120,7 +148,7 @@ export function DataTable<TData, TValue>({
                             onColumnFilterChange(columnId, val || null)
                           }
                           placeholder={meta.filterPlaceholder ?? labels.table.filterPlaceholder}
-                          className="h-8 text-xs"
+                          className="h-7 rounded-md border-transparent bg-transparent text-xs placeholder:text-muted-foreground/50 hover:bg-muted/50 focus-visible:border-input focus-visible:bg-transparent focus-visible:ring-1 focus-visible:ring-ring/30"
                         />
                       ) : meta?.filterType === 'select' ? (
                         <Select
@@ -132,8 +160,8 @@ export function DataTable<TData, TValue>({
                             )
                           }
                         >
-                          <SelectTrigger className="h-8 text-xs">
-                            <SelectValue />
+                          <SelectTrigger className="h-7 border-transparent bg-transparent text-xs hover:bg-muted/50 focus-visible:border-input focus-visible:ring-1 focus-visible:ring-ring/30 data-placeholder:text-muted-foreground/50">
+                            <SelectValue placeholder={labels.table.allItems} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value={ALL_VALUE}>
@@ -157,7 +185,7 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id} className="border-b-foreground/5">
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -166,8 +194,11 @@ export function DataTable<TData, TValue>({
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableRow className="hover:bg-transparent">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-20 text-center text-sm text-muted-foreground"
+                >
                   {labels.table.noResults}
                 </TableCell>
               </TableRow>
@@ -176,20 +207,25 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      {/* Pagination */}
       {pagination && (
-        <div className="flex items-center justify-between px-2 py-4">
-          <div className="flex items-center gap-4">
-            <p className="text-muted-foreground text-sm">
-              {labels.table.results(pagination.total)}
-            </p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted-foreground tabular-nums">
+            {labels.table.results(pagination.total)}
+          </p>
+
+          <div className="flex items-center gap-3">
             {onPerPageChange && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-muted-foreground">
+                  {labels.table.perPage}
+                </span>
                 <Select
                   value={String(pagination.per_page)}
-                  onValueChange={(val) => { if (val) onPerPageChange(Number(val)) }}
+                  onValueChange={(val) => {
+                    if (val) onPerPageChange(Number(val))
+                  }}
                 >
-                  <SelectTrigger className="h-8 w-[70px] text-xs">
+                  <SelectTrigger size="sm" className="h-7 w-14 text-xs border-foreground/10">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -200,37 +236,33 @@ export function DataTable<TData, TValue>({
                     ))}
                   </SelectContent>
                 </Select>
-                <span className="text-muted-foreground text-xs">
-                  {labels.table.perPage}
+              </div>
+            )}
+
+            {pagination.last_page > 1 && (
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-muted-foreground tabular-nums px-1">
+                  {pagination.current_page}/{pagination.last_page}
                 </span>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => onPageChange?.(pagination.current_page - 1)}
+                  disabled={pagination.current_page <= 1}
+                >
+                  <ChevronLeft className="size-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => onPageChange?.(pagination.current_page + 1)}
+                  disabled={pagination.current_page >= pagination.last_page}
+                >
+                  <ChevronRight className="size-4" />
+                </Button>
               </div>
             )}
           </div>
-
-          {pagination.last_page > 1 && (
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-sm">
-                {labels.table.page} {pagination.current_page} {labels.table.of}{' '}
-                {pagination.last_page}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onPageChange?.(pagination.current_page - 1)}
-                disabled={pagination.current_page <= 1}
-              >
-                {labels.table.previous}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onPageChange?.(pagination.current_page + 1)}
-                disabled={pagination.current_page >= pagination.last_page}
-              >
-                {labels.table.next}
-              </Button>
-            </div>
-          )}
         </div>
       )}
     </div>
