@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Authorized } from '@/components/ui/authorized'
 import { labels } from '@/lib/labels'
-import Link from 'next/link'
+import { UserFormDrawer } from './UserFormDrawer'
 
 interface UserDetailProps {
   id: string
@@ -24,6 +24,7 @@ export function UserDetail({ id }: UserDetailProps) {
   const { data: allScopeRulesData } = useDataScopeRules({ per_page: 100 })
   const { data: assignedScopeData } = useUserDataScopes(id)
   const syncDataScopes = useSyncUserDataScopes()
+  const [editOpen, setEditOpen] = useState(false)
 
   const user = data?.data
   const [selectedRoleIds, setSelectedRoleIds] = useState<number[]>([])
@@ -70,7 +71,7 @@ export function UserDetail({ id }: UserDetailProps) {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{user.name}</h1>
         <Authorized permission="users.update">
-          <Button variant="outline" nativeButton={false} render={<Link href={`/users/${id}/edit`} />}>
+          <Button variant="outline" onClick={() => setEditOpen(true)}>
             {labels.common.edit}
           </Button>
         </Authorized>
@@ -189,6 +190,7 @@ export function UserDetail({ id }: UserDetailProps) {
           </Button>
         </div>
       </Authorized>
+      <UserFormDrawer open={editOpen} onOpenChange={setEditOpen} mode="edit" userId={id} />
     </div>
   )
 }

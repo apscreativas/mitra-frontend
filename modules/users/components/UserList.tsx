@@ -10,9 +10,10 @@ import type { UserListParams } from '../types'
 
 interface UserListProps {
   roleOptions?: { label: string; value: string }[]
+  onEdit?: (id: string) => void
 }
 
-export function UserList({ roleOptions = [] }: UserListProps) {
+export function UserList({ roleOptions = [], onEdit }: UserListProps) {
   const {
     sorting,
     columnFilters,
@@ -51,6 +52,7 @@ export function UserList({ roleOptions = [] }: UserListProps) {
           filterOptions={filterOptions}
           onPageChange={onPageChange}
           onPerPageChange={onPerPageChange}
+          meta={{ onEdit }}
         />
       )}
     </div>
