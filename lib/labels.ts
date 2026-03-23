@@ -13,6 +13,7 @@ export const labels = {
     delete: 'Eliminar',
     actions: 'Acciones',
     view: 'Ver',
+    manage: 'Administrar',
     status: 'Estado',
     createdAt: 'Fecha de creación',
     active: 'Activo',
@@ -156,6 +157,11 @@ export const labels = {
       status: 'Filtrar por estado',
       dateFrom: 'Desde',
       dateTo: 'Hasta',
+    },
+    sections: {
+      info: 'Información',
+      roles: 'Roles',
+      access: 'Acceso',
     },
   },
   roles: {
