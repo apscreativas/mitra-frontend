@@ -57,7 +57,7 @@ export const areaColumns: ColumnDef<Area>[] = [
       return (
         <ActionsDropdown
           onEdit={() => meta?.onEdit?.(row.original.id)}
-          editPermission="rrhh.areas.update"
+          editPermission="areas.update"
         />
       )
     },

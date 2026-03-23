@@ -16,9 +16,9 @@ import { PositionList } from './PositionList'
 import { PositionFormDrawer } from './PositionFormDrawer'
 
 const tabPermissions: Record<string, string> = {
-  areas: 'rrhh.areas.create',
-  positions: 'rrhh.positions.create',
-  documentation: 'rrhh.documents.create',
+  areas: 'areas.create',
+  positions: 'positions.create',
+  documentation: 'documents.create',
 }
 
 const tabCreateLabels: Record<string, string> = {

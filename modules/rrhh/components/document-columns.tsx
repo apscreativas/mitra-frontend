@@ -77,7 +77,7 @@ export const documentColumns: ColumnDef<Document>[] = [
       return (
         <ActionsDropdown
           onEdit={() => meta?.onEdit?.(row.original.id)}
-          editPermission="rrhh.documents.update"
+          editPermission="documents.update"
         />
       )
     },

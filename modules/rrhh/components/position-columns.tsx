@@ -79,7 +79,7 @@ export const positionColumns: ColumnDef<Position>[] = [
       return (
         <ActionsDropdown
           onEdit={() => meta?.onEdit?.(row.original.id)}
-          editPermission="rrhh.positions.update"
+          editPermission="positions.update"
         />
       )
     },
