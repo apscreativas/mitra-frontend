@@ -156,7 +156,7 @@ export function OrgChart({ onViewEmployee }: OrgChartProps) {
       <div
         ref={containerRef}
         data-org-chart-bg
-        className="relative overflow-hidden rounded-lg border border-border/50 bg-muted/30"
+        className="relative select-none overflow-hidden rounded-lg border border-border/50 bg-muted/30"
         style={{ height: 'calc(100vh - 460px)', minHeight: '300px', cursor: isPanning ? 'grabbing' : 'grab' }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}

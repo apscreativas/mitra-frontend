@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import {
   FormDrawer,
   FormDrawerContent,
@@ -83,6 +84,14 @@ export function OrgChartNodeDetailDrawer({
                       className="flex items-center justify-between py-2.5"
                     >
                       <div className="flex items-center gap-2">
+                        <Avatar size="sm">
+                          {employee.avatar_url && (
+                            <AvatarImage src={employee.avatar_url} alt={employee.name} />
+                          )}
+                          <AvatarFallback className="bg-primary/10 text-primary text-[10px]">
+                            {employee.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
                         <span className="text-sm font-medium text-foreground">
                           {employee.name}
                         </span>

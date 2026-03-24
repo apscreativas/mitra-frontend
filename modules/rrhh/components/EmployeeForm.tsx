@@ -176,7 +176,7 @@ export function EmployeeForm({ defaultValues, employeeId, mode, formId = 'employ
                     <option value="">{labels.rrhh.employees.selectPosition}</option>
                     {positions.map((pos) => (
                       <option key={pos.id} value={pos.id}>
-                        {pos.name}
+                        {pos.name} — {pos.area_name}
                       </option>
                     ))}
                   </select>
