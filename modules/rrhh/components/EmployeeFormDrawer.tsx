@@ -1,8 +1,8 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import Image from 'next/image'
-import { Camera, Trash2, ShieldOff, ShieldCheck } from 'lucide-react'
+import { Camera, Trash2, ShieldOff, ShieldCheck, KeyRound } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   FormDrawer,
@@ -11,10 +11,11 @@ import {
   FormDrawerTitle,
 } from '@/components/ui/form-drawer'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Authorized } from '@/components/ui/authorized'
 import { LoadingState } from '@/components/ui/states'
 import { labels } from '@/lib/labels'
-import { useEmployee, useUploadEmployeeAvatar, useDeleteEmployeeAvatar, useBlockEmployee, useUnblockEmployee } from '../hooks/use-employees'
+import { useEmployee, useUploadEmployeeAvatar, useDeleteEmployeeAvatar, useBlockEmployee, useUnblockEmployee, useResetEmployeePassword } from '../hooks/use-employees'
 import { EmployeeForm } from './EmployeeForm'
 
 interface EmployeeFormDrawerProps {
@@ -33,7 +34,11 @@ export function EmployeeFormDrawer({ open, onOpenChange, mode, employeeId }: Emp
   const deleteAvatar = useDeleteEmployeeAvatar()
   const blockEmployee = useBlockEmployee()
   const unblockEmployee = useUnblockEmployee()
+  const resetPassword = useResetEmployeePassword()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [showPasswordReset, setShowPasswordReset] = useState(false)
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   const title = isEdit
     ? `${labels.common.edit}: ${employee?.name ?? ''}`
@@ -185,6 +190,76 @@ export function EmployeeFormDrawer({ open, onOpenChange, mode, employeeId }: Emp
                     )}
                   </div>
                 </Authorized>
+              )}
+
+              {/* Password reset — only in edit mode */}
+              {isEdit && employee && (
+                <div className="px-6 pb-2">
+                  <Authorized permission="employees.reset_password">
+                    {!showPasswordReset ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                        onClick={() => setShowPasswordReset(true)}
+                      >
+                        <KeyRound className="h-4 w-4" />
+                        {labels.rrhh.employees.resetPassword}
+                      </Button>
+                    ) : (
+                      <div className="space-y-3 rounded-lg border border-border p-3">
+                        <p className="text-xs font-medium text-muted-foreground">{labels.rrhh.employees.resetPassword}</p>
+                        <Input
+                          type="password"
+                          placeholder={labels.rrhh.employees.fields.password}
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                        />
+                        <Input
+                          type="password"
+                          placeholder={labels.rrhh.employees.fields.passwordConfirmation}
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => {
+                              setShowPasswordReset(false)
+                              setNewPassword('')
+                              setConfirmPassword('')
+                            }}
+                          >
+                            {labels.common.cancel}
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="flex-1"
+                            disabled={!newPassword || !confirmPassword || resetPassword.isPending}
+                            onClick={async () => {
+                              try {
+                                await resetPassword.mutateAsync({
+                                  id: String(employee.id),
+                                  data: { password: newPassword, password_confirmation: confirmPassword },
+                                })
+                                toast.success(labels.rrhh.employees.passwordChanged)
+                                setShowPasswordReset(false)
+                                setNewPassword('')
+                                setConfirmPassword('')
+                              } catch (err: unknown) {
+                                toast.error(err instanceof Error ? err.message : labels.common.error)
+                              }
+                            }}
+                          >
+                            {labels.common.save}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </Authorized>
+                </div>
               )}
 
               <EmployeeForm

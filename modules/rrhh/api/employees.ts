@@ -58,3 +58,7 @@ export async function uploadEmployeeAvatar(userId: string, file: File): Promise<
 export async function deleteEmployeeAvatar(userId: string): Promise<{ data: { avatar_url: string | null } }> {
   return httpClient.delete(`/users/${userId}/avatar`)
 }
+
+export async function resetEmployeePassword(id: string, data: { password: string; password_confirmation: string }) {
+  return httpClient.put(`/rrhh/employees/${id}/reset-password`, data)
+}

@@ -344,6 +344,8 @@ export const labels = {
       empty: 'No hay empleados registrados',
       blocked: 'Empleado bloqueado',
       unblocked: 'Empleado desbloqueado',
+      resetPassword: 'Cambiar contraseña',
+      passwordChanged: 'Contraseña cambiada exitosamente',
       selectPosition: 'Seleccionar puesto',
       generatePassword: 'Generar contraseña',
       blockAction: 'Bloquear',

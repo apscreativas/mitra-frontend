@@ -12,6 +12,7 @@ import {
   uploadEmployeeAvatar,
   deleteEmployeeAvatar,
   getLocations,
+  resetEmployeePassword,
 } from '../api/employees'
 import type { EmployeeListParams, CreateEmployeeInput, UpdateEmployeeInput } from '../types'
 
@@ -93,6 +94,17 @@ export function useDeleteEmployeeAvatar() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: employeeKeys.all })
       queryClient.invalidateQueries({ queryKey: ['users'] })
+    },
+  })
+}
+
+export function useResetEmployeePassword() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { password: string; password_confirmation: string } }) =>
+      resetEmployeePassword(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: employeeKeys.all })
     },
   })
 }
