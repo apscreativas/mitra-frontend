@@ -58,6 +58,20 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
+    label: labels.nav.humanResources,
+    items: [
+      { href: '/recursos-humanos', label: labels.nav.rrhh, icon: Briefcase, permission: 'areas.view' },
+    ],
+  },
+  {
+    label: labels.nav.administration,
+    items: [
+      { href: '/users', label: labels.nav.users, icon: Users, permission: 'users.view' },
+      { href: '/roles', label: labels.nav.roles, icon: Shield, permission: 'roles.view' },
+      { href: '/data-scopes', label: labels.nav.dataScopes, icon: SlidersHorizontal, permission: 'data_scopes.view' },
+    ],
+  },
+  {
     label: labels.nav.operations,
     items: [
       { href: '/proyectos', label: labels.nav.projects, icon: FolderKanban },
@@ -81,20 +95,6 @@ const navGroups: NavGroup[] = [
       { href: '/contpaqi', label: labels.nav.contpaqi, icon: Calculator },
       { href: '/cxc', label: labels.nav.accountsReceivable, icon: ArrowUpRight },
       { href: '/cxp', label: labels.nav.accountsPayable, icon: ArrowDownLeft },
-    ],
-  },
-  {
-    label: labels.nav.humanResources,
-    items: [
-      { href: '/recursos-humanos', label: labels.nav.rrhh, icon: Briefcase, permission: 'areas.view' },
-    ],
-  },
-  {
-    label: labels.nav.administration,
-    items: [
-      { href: '/users', label: labels.nav.users, icon: Users, permission: 'users.view' },
-      { href: '/roles', label: labels.nav.roles, icon: Shield, permission: 'roles.view' },
-      { href: '/data-scopes', label: labels.nav.dataScopes, icon: SlidersHorizontal, permission: 'data_scopes.view' },
     ],
   },
 ]
