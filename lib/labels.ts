@@ -264,7 +264,8 @@ export const labels = {
     stats: {
       activeAreas: 'Áreas Activas',
       activePositions: 'Puestos Activos',
-      authorizedPositions: 'Plazas Autorizadas',
+      areaCapacity: 'Plazas por Área',
+      positionSlots: 'Plazas por Puesto',
       activeDocuments: 'Documentos Activos',
     },
     tabs: {

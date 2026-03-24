@@ -113,7 +113,8 @@ export interface DocumentListParams {
 export interface RrhhStats {
   active_areas: number
   active_positions: number
-  total_authorized_positions: number
+  total_area_capacity: number
+  total_position_slots: number
   active_documents: number
 }
 
