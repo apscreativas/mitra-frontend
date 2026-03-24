@@ -159,8 +159,8 @@ export function EmployeeFormDrawer({ open, onOpenChange, mode, employeeId }: Emp
                             await blockEmployee.mutateAsync(String(employee.id))
                             toast.success(labels.rrhh.employees.blocked)
                             refetch()
-                          } catch {
-                            // httpClient handles error toasts
+                          } catch (err: unknown) {
+                            toast.error(err instanceof Error ? err.message : labels.common.error)
                           }
                         }}
                       >
@@ -179,8 +179,8 @@ export function EmployeeFormDrawer({ open, onOpenChange, mode, employeeId }: Emp
                             await unblockEmployee.mutateAsync(String(employee.id))
                             toast.success(labels.rrhh.employees.unblocked)
                             refetch()
-                          } catch {
-                            // httpClient handles error toasts
+                          } catch (err: unknown) {
+                            toast.error(err instanceof Error ? err.message : labels.common.error)
                           }
                         }}
                       >

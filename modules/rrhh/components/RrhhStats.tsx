@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardAction, CardContent } from '@/components/ui/card'
-import { LoadingState } from '@/components/ui/states'
+import { LoadingState, ErrorState } from '@/components/ui/states'
 import { useRrhhStats } from '../hooks/use-rrhh-stats'
 import type { RrhhTab } from '../types'
 
@@ -41,8 +41,9 @@ interface RrhhStatsProps {
 }
 
 export function RrhhStats({ activeTab }: RrhhStatsProps) {
-  const { data, isLoading } = useRrhhStats(activeTab)
+  const { data, isLoading, isError, error, refetch } = useRrhhStats(activeTab)
   if (isLoading) return <LoadingState />
+  if (isError) return <ErrorState error={error} onRetry={refetch} />
   const metrics = data?.data?.metrics ?? []
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

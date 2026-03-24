@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { FileUpIcon, ExternalLinkIcon } from 'lucide-react'
+import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { labels } from '@/lib/labels'
@@ -27,7 +28,12 @@ export function EmployeeDocuments({ employee, readOnly = false, onDocumentUpload
   function handleUpload(employeeDocId: string, file: File) {
     uploadDoc.mutate(
       { employeeId: String(employee.id), documentId: employeeDocId, file },
-      { onSuccess: () => onDocumentUploaded?.() }
+      {
+        onSuccess: () => onDocumentUploaded?.(),
+        onError: (error) => {
+          toast.error(error instanceof Error ? error.message : labels.common.error)
+        },
+      }
     )
   }
 

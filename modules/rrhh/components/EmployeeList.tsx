@@ -33,7 +33,7 @@ export function EmployeeList({ onEdit, onView }: EmployeeListProps) {
       { label: labels.rrhh.employees.statuses.active, value: 'active' },
       { label: labels.rrhh.employees.statuses.blocked, value: 'blocked' },
     ],
-    position_id: (positionsData?.data ?? []).map((p) => ({ label: p.name, value: String(p.id) })),
+    position_id: (positionsData?.data ?? []).map((p) => ({ label: `${p.name} — ${p.area_name}`, value: String(p.id) })),
   }
 
   if (error) return <ErrorState error={error} onRetry={refetch} />

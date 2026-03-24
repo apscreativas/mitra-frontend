@@ -180,7 +180,7 @@ export function PositionForm({ defaultValues, positionId, mode, formId = 'positi
                     <option value="">{labels.rrhh.positions.noReportsTo}</option>
                     {positions.map((pos) => (
                       <option key={pos.id} value={pos.id}>
-                        {pos.name}
+                        {pos.name} — {pos.area_name}
                       </option>
                     ))}
                   </select>
