@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import type { OrgChartNode as OrgChartNodeType, OrgChartEmployee } from '../types'
 import { OrgChartNode } from './OrgChartNode'
+import styles from './org-chart-tree.module.css'
 
 interface ProcessedNode {
   id: number
@@ -160,9 +161,10 @@ export function OrgChartTree({ nodes, selectedAreaId, employeeStatus, onNodeClic
   function renderNode(node: ProcessedNode) {
     const isExpanded = expandedIds.has(node.id)
     const vacancies = Math.max(0, node.authorizedPositions - node.allEmployeeCount)
+    const showChildren = isExpanded && node.children.length > 0
 
     return (
-      <div key={node.id} className="flex flex-col">
+      <li key={node.id} className={`flex flex-col items-center ${styles.childNode}`}>
         <OrgChartNode
           positionName={node.name}
           areaName={node.areaName}
@@ -173,21 +175,38 @@ export function OrgChartTree({ nodes, selectedAreaId, employeeStatus, onNodeClic
           onToggleExpand={() => toggleExpand(node.id)}
           onClick={() => onNodeClick(node.id)}
         />
-        {isExpanded && node.children.length > 0 && (
-          <div className="ml-8 mt-1 flex flex-col gap-1 border-l border-border/50 pl-3">
+
+        {showChildren && (
+          <ul className={`flex items-start justify-center pt-5 ${styles.children}`}>
             {node.children.map((child) => renderNode(child))}
-          </div>
+          </ul>
         )}
-      </div>
+      </li>
     )
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-10">
       {trees.map((root) => (
-        <div key={root.id} className="flex flex-col gap-1">
-          {renderNode(root)}
-        </div>
+        <ul key={root.id} className="flex items-start justify-center">
+          <li className="flex flex-col items-center">
+            <OrgChartNode
+              positionName={root.name}
+              areaName={root.areaName}
+              employees={root.employees}
+              vacancies={Math.max(0, root.authorizedPositions - root.allEmployeeCount)}
+              hasChildren={root.children.length > 0}
+              isExpanded={expandedIds.has(root.id)}
+              onToggleExpand={() => toggleExpand(root.id)}
+              onClick={() => onNodeClick(root.id)}
+            />
+            {expandedIds.has(root.id) && root.children.length > 0 && (
+              <ul className={`flex items-start justify-center pt-5 ${styles.children}`}>
+                {root.children.map((child) => renderNode(child))}
+              </ul>
+            )}
+          </li>
+        </ul>
       ))}
     </div>
   )
