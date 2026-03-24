@@ -7,6 +7,7 @@ import {
   updateUser,
   forceChangePassword,
   uploadAvatar,
+  deleteAvatar,
   syncUserRoles,
 } from './api'
 import type { UserListParams, CreateUserInput, UpdateUserInput } from './types'
@@ -59,6 +60,16 @@ export function useUploadAvatar() {
   return useMutation({
     mutationFn: ({ userId, file }: { userId: string; file: File }) => uploadAvatar(userId, file),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: userKeys.all }),
+  })
+}
+
+export function useDeleteAvatar() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (userId: string) => deleteAvatar(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userKeys.all })
+    },
   })
 }
 

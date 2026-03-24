@@ -48,3 +48,13 @@ export async function uploadEmployeeDocument(employeeId: string, documentId: str
 export async function getLocations(query?: string): Promise<{ data: string[] }> {
   return httpClient.get('/rrhh/employees/locations', { params: query ? { q: query } : undefined })
 }
+
+export async function uploadEmployeeAvatar(userId: string, file: File): Promise<unknown> {
+  const formData = new FormData()
+  formData.append('avatar', file)
+  return httpClient.post(`/users/${userId}/avatar`, formData)
+}
+
+export async function deleteEmployeeAvatar(userId: string): Promise<unknown> {
+  return httpClient.delete(`/users/${userId}/avatar`)
+}

@@ -132,6 +132,7 @@ export interface Employee {
   location: string | null
   seniority_years: number
   user_id: string
+  avatar_url: string | null
   required_docs_total: number
   required_docs_uploaded: number
   optional_docs_total: number

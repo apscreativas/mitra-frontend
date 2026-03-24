@@ -9,6 +9,8 @@ import {
   blockEmployee,
   unblockEmployee,
   uploadEmployeeDocument,
+  uploadEmployeeAvatar,
+  deleteEmployeeAvatar,
   getLocations,
 } from '../api/employees'
 import type { EmployeeListParams, CreateEmployeeInput, UpdateEmployeeInput } from '../types'
@@ -69,6 +71,23 @@ export function useUploadDocument() {
       queryClient.invalidateQueries({ queryKey: employeeKeys.all })
       queryClient.invalidateQueries({ queryKey: employeeKeys.detail(variables.employeeId) })
     },
+  })
+}
+
+export function useUploadEmployeeAvatar() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ userId, file }: { userId: string; file: File }) =>
+      uploadEmployeeAvatar(userId, file),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: employeeKeys.all }),
+  })
+}
+
+export function useDeleteEmployeeAvatar() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (userId: string) => deleteEmployeeAvatar(userId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: employeeKeys.all }),
   })
 }
 
