@@ -85,7 +85,7 @@ const navGroups: NavGroup[] = [
   {
     label: labels.nav.humanResources,
     items: [
-      { href: '/rrhh', label: labels.nav.rrhh, icon: Briefcase, permission: 'rrhh.view' },
+      { href: '/recursos-humanos', label: labels.nav.rrhh, icon: Briefcase, permission: 'areas.view' },
     ],
   },
   {
