@@ -23,6 +23,16 @@ export const positionColumns: ColumnDef<Position>[] = [
     header: labels.rrhh.positions.fields.authorizedPositions,
   },
   {
+    accessorKey: 'occupied_positions',
+    header: labels.rrhh.positions.fields.occupiedPositions,
+    enableSorting: false,
+    cell: ({ row }) => {
+      const occupied = row.original.occupied_positions
+      const authorized = row.original.authorized_positions
+      return `${occupied} / ${authorized}`
+    },
+  },
+  {
     accessorKey: 'reports_to_name',
     header: labels.rrhh.positions.fields.reportsTo,
     enableSorting: false,

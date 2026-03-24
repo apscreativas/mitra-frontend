@@ -310,6 +310,7 @@ export const labels = {
         name: 'Nombre',
         area: 'Área',
         authorizedPositions: 'Plazas autorizadas',
+        occupiedPositions: 'Plazas ocupadas',
         reportsTo: 'Reporta a',
         status: 'Estado',
         documents: 'Documentos',

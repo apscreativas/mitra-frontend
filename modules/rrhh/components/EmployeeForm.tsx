@@ -164,26 +164,39 @@ export function EmployeeForm({ defaultValues, employeeId, mode, formId = 'employ
           <FormField
             control={form.control}
             name="position_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{labels.rrhh.employees.fields.position}</FormLabel>
-                <FormControl>
-                  <select
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                    value={field.value}
-                    onChange={field.onChange}
-                  >
-                    <option value="">{labels.rrhh.employees.selectPosition}</option>
-                    {positions.map((pos) => (
-                      <option key={pos.id} value={pos.id}>
-                        {pos.name} — {pos.area_name}
-                      </option>
-                    ))}
-                  </select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              const grouped = positions.reduce<Record<string, typeof positions>>((acc, pos) => {
+                const area = pos.area_name
+                if (!acc[area]) acc[area] = []
+                acc[area].push(pos)
+                return acc
+              }, {})
+
+              return (
+                <FormItem>
+                  <FormLabel>{labels.rrhh.employees.fields.position}</FormLabel>
+                  <FormControl>
+                    <select
+                      className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                      value={field.value}
+                      onChange={field.onChange}
+                    >
+                      <option value="">{labels.rrhh.employees.selectPosition}</option>
+                      {Object.entries(grouped).map(([areaName, areaPositions]) => (
+                        <optgroup key={areaName} label={areaName}>
+                          {areaPositions.map((pos) => (
+                            <option key={pos.id} value={pos.id}>
+                              {pos.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )
+            }}
           />
           <FormField
             control={form.control}

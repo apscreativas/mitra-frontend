@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import Image from 'next/image'
-import { Camera, Trash2 } from 'lucide-react'
+import { Camera, Trash2, ShieldOff, ShieldCheck } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   FormDrawer,
@@ -10,9 +10,11 @@ import {
   FormDrawerHeader,
   FormDrawerTitle,
 } from '@/components/ui/form-drawer'
+import { Button } from '@/components/ui/button'
+import { Authorized } from '@/components/ui/authorized'
 import { LoadingState } from '@/components/ui/states'
 import { labels } from '@/lib/labels'
-import { useEmployee, useUploadEmployeeAvatar, useDeleteEmployeeAvatar } from '../hooks/use-employees'
+import { useEmployee, useUploadEmployeeAvatar, useDeleteEmployeeAvatar, useBlockEmployee, useUnblockEmployee } from '../hooks/use-employees'
 import { EmployeeForm } from './EmployeeForm'
 
 interface EmployeeFormDrawerProps {
@@ -29,6 +31,8 @@ export function EmployeeFormDrawer({ open, onOpenChange, mode, employeeId }: Emp
 
   const uploadAvatar = useUploadEmployeeAvatar()
   const deleteAvatar = useDeleteEmployeeAvatar()
+  const blockEmployee = useBlockEmployee()
+  const unblockEmployee = useUnblockEmployee()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const title = isEdit
@@ -132,6 +136,55 @@ export function EmployeeFormDrawer({ open, onOpenChange, mode, employeeId }: Emp
                     {labels.users.avatar.formats}
                   </span>
                 </div>
+              )}
+
+              {/* Block / Unblock — only in edit mode */}
+              {isEdit && employee && (
+                <Authorized permission="employees.update">
+                  <div className="px-6 pb-2">
+                    {employee.status === 'active' ? (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-destructive"
+                        disabled={blockEmployee.isPending}
+                        onClick={async () => {
+                          try {
+                            await blockEmployee.mutateAsync(String(employee.id))
+                            toast.success(labels.rrhh.employees.blocked)
+                            refetch()
+                          } catch {
+                            // httpClient handles error toasts
+                          }
+                        }}
+                      >
+                        <ShieldOff className="mr-2 h-4 w-4" />
+                        {labels.rrhh.employees.blockAction}
+                      </Button>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                        disabled={unblockEmployee.isPending}
+                        onClick={async () => {
+                          try {
+                            await unblockEmployee.mutateAsync(String(employee.id))
+                            toast.success(labels.rrhh.employees.unblocked)
+                            refetch()
+                          } catch {
+                            // httpClient handles error toasts
+                          }
+                        }}
+                      >
+                        <ShieldCheck className="mr-2 h-4 w-4" />
+                        {labels.rrhh.employees.unblockAction}
+                      </Button>
+                    )}
+                  </div>
+                </Authorized>
               )}
 
               <EmployeeForm

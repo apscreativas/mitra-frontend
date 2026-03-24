@@ -38,6 +38,7 @@ export interface Position {
   area_name: string
   status: 'active' | 'inactive'
   authorized_positions: number
+  occupied_positions: number
   reports_to_id: string | null
   reports_to_name: string | null
   documents: PositionDocument[]
