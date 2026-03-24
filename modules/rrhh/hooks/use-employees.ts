@@ -79,7 +79,10 @@ export function useUploadEmployeeAvatar() {
   return useMutation({
     mutationFn: ({ userId, file }: { userId: string; file: File }) =>
       uploadEmployeeAvatar(userId, file),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: employeeKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: employeeKeys.all })
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+    },
   })
 }
 
@@ -87,7 +90,10 @@ export function useDeleteEmployeeAvatar() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (userId: string) => deleteEmployeeAvatar(userId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: employeeKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: employeeKeys.all })
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+    },
   })
 }
 
