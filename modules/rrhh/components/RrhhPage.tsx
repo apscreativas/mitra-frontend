@@ -14,22 +14,34 @@ import { DocumentList } from './DocumentList'
 import { DocumentFormDrawer } from './DocumentFormDrawer'
 import { PositionList } from './PositionList'
 import { PositionFormDrawer } from './PositionFormDrawer'
+import { EmployeeList } from './EmployeeList'
+import { EmployeeFormDrawer } from './EmployeeFormDrawer'
+import { EmployeeDetailDrawer } from './EmployeeDetailDrawer'
 
 const tabPermissions: Record<string, string> = {
+  employees: 'employees.create',
   areas: 'areas.create',
   positions: 'positions.create',
   documentation: 'documents.create',
 }
 
 const tabCreateLabels: Record<string, string> = {
+  employees: labels.rrhh.employees.create,
   areas: labels.rrhh.areas.create,
   positions: labels.rrhh.positions.create,
   documentation: labels.rrhh.documents.create,
 }
 
 export function RrhhPage() {
-  const [activeTab, setActiveTab] = useState<RrhhTab>('areas')
+  const [activeTab, setActiveTab] = useState<RrhhTab>('employees')
 
+  const [employeeDrawer, setEmployeeDrawer] = useState<{ open: boolean; mode: 'create' | 'edit'; employeeId?: string }>({
+    open: false,
+    mode: 'create',
+  })
+  const [employeeDetailDrawer, setEmployeeDetailDrawer] = useState<{ open: boolean; employeeId?: string }>({
+    open: false,
+  })
   const [areaDrawer, setAreaDrawer] = useState<{ open: boolean; mode: 'create' | 'edit'; areaId?: string }>({
     open: false,
     mode: 'create',
@@ -44,7 +56,9 @@ export function RrhhPage() {
   })
 
   function handleCreate() {
-    if (activeTab === 'areas') {
+    if (activeTab === 'employees') {
+      setEmployeeDrawer({ open: true, mode: 'create' })
+    } else if (activeTab === 'areas') {
       setAreaDrawer({ open: true, mode: 'create' })
     } else if (activeTab === 'positions') {
       setPositionDrawer({ open: true, mode: 'create' })
@@ -80,6 +94,12 @@ export function RrhhPage() {
       </div>
 
       <div className="rounded-xl bg-background ring-1 ring-foreground/10 p-6">
+        {activeTab === 'employees' && (
+          <EmployeeList
+            onEdit={(id) => setEmployeeDrawer({ open: true, mode: 'edit', employeeId: id })}
+            onView={(id) => setEmployeeDetailDrawer({ open: true, employeeId: id })}
+          />
+        )}
         {activeTab === 'areas' && (
           <AreaList
             onEdit={(id) => setAreaDrawer({ open: true, mode: 'edit', areaId: id })}
@@ -97,6 +117,17 @@ export function RrhhPage() {
         )}
       </div>
 
+      <EmployeeFormDrawer
+        open={employeeDrawer.open}
+        onOpenChange={(open) => setEmployeeDrawer((prev) => ({ ...prev, open }))}
+        mode={employeeDrawer.mode}
+        employeeId={employeeDrawer.employeeId}
+      />
+      <EmployeeDetailDrawer
+        open={employeeDetailDrawer.open}
+        onOpenChange={(open) => setEmployeeDetailDrawer((prev) => ({ ...prev, open }))}
+        employeeId={employeeDetailDrawer.employeeId}
+      />
       <AreaFormDrawer
         open={areaDrawer.open}
         onOpenChange={(open) => setAreaDrawer((prev) => ({ ...prev, open }))}

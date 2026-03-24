@@ -57,3 +57,22 @@ export const updatePositionSchema = z.object({
 
 export type CreatePositionFormValues = z.infer<typeof createPositionSchema>
 export type UpdatePositionFormValues = z.infer<typeof updatePositionSchema>
+
+// Employee
+export const createEmployeeSchema = z.object({
+  name: z.string().min(1, 'El nombre es requerido').max(255),
+  email: z.string().min(1, 'El correo es requerido').email('Correo inválido').max(255),
+  position_id: z.string().min(1, 'El puesto es requerido'),
+  hired_at: z.string().min(1, 'La fecha de ingreso es requerida'),
+  location: z.string().max(255).optional().nullable(),
+})
+
+export const updateEmployeeSchema = z.object({
+  name: z.string().min(1).max(255),
+  position_id: z.string().min(1),
+  hired_at: z.string().min(1),
+  location: z.string().max(255).optional().nullable(),
+})
+
+export type CreateEmployeeFormValues = z.infer<typeof createEmployeeSchema>
+export type UpdateEmployeeFormValues = z.infer<typeof updateEmployeeSchema>

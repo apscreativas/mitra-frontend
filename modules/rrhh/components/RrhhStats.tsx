@@ -1,17 +1,17 @@
 'use client'
 
-import { Building2, Briefcase, Users2, FileText } from 'lucide-react'
+import { Users, UserX, CheckCircle, AlertCircle, Briefcase } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardAction, CardContent } from '@/components/ui/card'
 import { LoadingState } from '@/components/ui/states'
 import { labels } from '@/lib/labels'
 import { useRrhhStats } from '../hooks/use-rrhh-stats'
 
 const statConfig = [
-  { key: 'active_areas', label: labels.rrhh.stats.activeAreas, icon: Building2, color: 'bg-blue-50 text-primary' },
-  { key: 'active_positions', label: labels.rrhh.stats.activePositions, icon: Briefcase, color: 'bg-emerald-50 text-emerald-700' },
-  { key: 'total_area_capacity', label: labels.rrhh.stats.areaCapacity, icon: Users2, color: 'bg-amber-50 text-amber-700' },
-  { key: 'total_position_slots', label: labels.rrhh.stats.positionSlots, icon: Users2, color: 'bg-violet-50 text-violet-700' },
-  { key: 'active_documents', label: labels.rrhh.stats.activeDocuments, icon: FileText, color: 'bg-blue-50 text-blue-700' },
+  { key: 'active_employees', label: labels.rrhh.stats.activeEmployees, icon: Users, color: 'bg-emerald-50 text-emerald-700' },
+  { key: 'blocked_employees', label: labels.rrhh.stats.blockedEmployees, icon: UserX, color: 'bg-destructive/10 text-destructive' },
+  { key: 'complete_docs', label: labels.rrhh.stats.completeDocs, icon: CheckCircle, color: 'bg-emerald-50 text-emerald-700' },
+  { key: 'incomplete_docs', label: labels.rrhh.stats.incompleteDocs, icon: AlertCircle, color: 'bg-amber-50 text-amber-700' },
+  { key: 'active_positions', label: labels.rrhh.stats.activePositions, icon: Briefcase, color: 'bg-blue-50 text-primary' },
 ] as const
 
 export function RrhhStats() {

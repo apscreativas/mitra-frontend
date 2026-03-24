@@ -109,13 +109,79 @@ export interface DocumentListParams {
   sort?: string
 }
 
+// Employee types
+export interface EmployeeDocument {
+  id: string
+  document_id: string
+  document_name: string
+  is_required: boolean
+  is_uploaded: boolean
+  file_url: string | null
+  updated_at: string
+}
+
+export interface Employee {
+  id: string
+  name: string
+  email: string
+  position_id: string
+  position_name: string
+  area_name: string
+  status: 'active' | 'blocked'
+  hired_at: string
+  location: string | null
+  seniority_years: number
+  user_id: string
+  required_docs_total: number
+  required_docs_uploaded: number
+  optional_docs_total: number
+  optional_docs_uploaded: number
+  is_docs_complete: boolean
+  documents: EmployeeDocument[]
+  created_at: string
+  updated_at: string
+}
+
+export interface CreateEmployeeInput {
+  name: string
+  email: string
+  position_id: string
+  hired_at: string
+  location?: string | null
+}
+
+export interface UpdateEmployeeInput {
+  name?: string
+  position_id?: string
+  hired_at?: string
+  location?: string | null
+}
+
+export interface EmployeeListParams {
+  'filter[name]'?: string
+  'filter[status]'?: string
+  'filter[position_id]'?: string
+  'filter[area_id]'?: string
+  page?: number
+  per_page?: number
+  sort?: string
+}
+
+export interface EmployeeFormProps {
+  defaultValues?: Partial<UpdateEmployeeInput>
+  employeeId?: string
+  mode: 'create' | 'edit'
+  formId?: string
+  onSuccess?: (temporaryPassword?: string) => void
+}
+
 // Stats
 export interface RrhhStats {
-  active_areas: number
+  active_employees: number
+  blocked_employees: number
+  complete_docs: number
+  incomplete_docs: number
   active_positions: number
-  total_area_capacity: number
-  total_position_slots: number
-  active_documents: number
 }
 
 // Tab type
