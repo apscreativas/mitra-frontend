@@ -220,6 +220,7 @@ export interface OrgChartEmployee {
   id: string
   name: string
   status: 'active' | 'blocked'
+  avatar_url: string | null
 }
 
 export interface OrgChartNode {

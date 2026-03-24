@@ -1,6 +1,7 @@
 'use client'
 
-import { ChevronDown, User, Users, Minus } from 'lucide-react'
+import { ChevronDown, Users, Minus } from 'lucide-react'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { labels } from '@/lib/labels'
 import type { OrgChartEmployee } from '../types'
@@ -54,9 +55,14 @@ export function OrgChartNode({
         <div className="flex items-center gap-2">
           {primaryEmployee ? (
             <>
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <User className="h-3.5 w-3.5" />
-              </div>
+              <Avatar size="sm">
+                {primaryEmployee.avatar_url && (
+                  <AvatarImage src={primaryEmployee.avatar_url} alt={primaryEmployee.name} />
+                )}
+                <AvatarFallback className="bg-primary/10 text-primary text-[10px]">
+                  {primaryEmployee.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
               <div className="flex flex-col items-start gap-0.5">
                 <span className="text-xs font-medium text-foreground">
                   {primaryEmployee.name}

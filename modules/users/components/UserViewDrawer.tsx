@@ -10,6 +10,7 @@ import {
   FormDrawerBody,
   FormDrawerFooter,
 } from '@/components/ui/form-drawer'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { DetailSection, DetailField } from '@/components/ui/detail-section'
 import { LoadingState, ErrorState } from '@/components/ui/states'
 import { Badge } from '@/components/ui/badge'
@@ -54,15 +55,25 @@ export function UserViewDrawer({ open, onOpenChange, userId }: UserViewDrawerPro
       <FormDrawer open={open} onOpenChange={onOpenChange} key={userId}>
         <FormDrawerContent>
           <FormDrawerHeader>
-            <div className="flex items-center gap-2">
-              <FormDrawerTitle>{user?.name ?? ''}</FormDrawerTitle>
-              {user && (
-                <Badge variant={statusVariant[user.status]}>
-                  {labels.users.statuses[user.status]}
-                </Badge>
-              )}
+            <div className="flex items-center gap-3">
+              <Avatar size="lg">
+                {user?.avatar_url && <AvatarImage src={user.avatar_url} alt={user?.name ?? ''} />}
+                <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                  {user?.name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() ?? ''}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <div className="flex items-center gap-2">
+                  <FormDrawerTitle>{user?.name ?? ''}</FormDrawerTitle>
+                  {user && (
+                    <Badge variant={statusVariant[user.status]}>
+                      {labels.users.statuses[user.status]}
+                    </Badge>
+                  )}
+                </div>
+                {user && <p className="text-sm text-muted-foreground">{user.email}</p>}
+              </div>
             </div>
-            {user && <p className="text-sm text-muted-foreground">{user.email}</p>}
           </FormDrawerHeader>
 
           {isError ? (

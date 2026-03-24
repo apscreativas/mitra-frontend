@@ -34,6 +34,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from '@/components/ui/sidebar'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { useUser, useLogout } from '@/lib/auth'
 import { labels } from '@/lib/labels'
 
@@ -167,9 +168,17 @@ export function AppSidebar() {
       <SidebarFooter className="p-4">
         <SidebarSeparator />
         <div className="flex items-center justify-between pt-2">
-          <div className="truncate">
-            <p className="text-sm font-medium truncate">{user?.name}</p>
-            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+          <div className="flex items-center gap-2 truncate">
+            <Avatar size="sm">
+              {user?.avatar_url && <AvatarImage src={user.avatar_url} alt={user?.name ?? ''} />}
+              <AvatarFallback className="bg-primary text-primary-foreground text-[10px]">
+                {user?.name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() ?? ''}
+              </AvatarFallback>
+            </Avatar>
+            <div className="truncate">
+              <p className="text-sm font-medium truncate">{user?.name}</p>
+              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+            </div>
           </div>
           <button
             onClick={() => logout.mutate()}
