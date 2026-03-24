@@ -2,6 +2,8 @@
 
 import { useRef } from 'react'
 import { FileUpIcon, ExternalLinkIcon } from 'lucide-react'
+import { toast } from 'sonner'
+import { ApiError } from '@/lib/http-client'
 import {
   FormDrawer,
   FormDrawerContent,
@@ -46,7 +48,16 @@ export function EmployeeDocumentUploadDrawer({
     if (!employeeId) return
     uploadDoc.mutate(
       { employeeId, documentId, file },
-      { onSuccess: () => refetch() },
+      {
+        onSuccess: () => refetch(),
+        onError: (error) => {
+          if (error instanceof ApiError) {
+            toast.error(error.message)
+          } else {
+            toast.error(labels.common.error)
+          }
+        },
+      },
     )
   }
 
