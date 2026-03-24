@@ -58,11 +58,17 @@ export function EmployeeForm({ defaultValues, employeeId, mode, formId = 'employ
 
   // Location combobox state
   function handleGeneratePassword() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%'
-    let password = ''
-    for (let i = 0; i < 16; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length))
-    }
+    const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    const lower = 'abcdefghijklmnopqrstuvwxyz'
+    const digits = '0123456789'
+    const symbols = '!@#$%'
+    const all = upper + lower + digits + symbols
+    const pick = (s: string) => s[Math.floor(Math.random() * s.length)]
+    // Guarantee at least 1 of each required category
+    const required = [pick(upper), pick(lower), pick(digits), pick(symbols)]
+    for (let i = required.length; i < 16; i++) required.push(pick(all))
+    // Shuffle
+    const password = required.sort(() => Math.random() - 0.5).join('')
     form.setValue('password' as never, password as never)
     form.setValue('password_confirmation' as never, password as never)
   }
