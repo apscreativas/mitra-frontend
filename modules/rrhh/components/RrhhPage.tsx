@@ -18,6 +18,7 @@ import { PositionFormDrawer } from './PositionFormDrawer'
 import { EmployeeList } from './EmployeeList'
 import { EmployeeFormDrawer } from './EmployeeFormDrawer'
 import { EmployeeDetailDrawer } from './EmployeeDetailDrawer'
+import { OrgChart } from './OrgChart'
 
 const tabPermissions: Record<string, string> = {
   employees: 'employees.create',
@@ -108,6 +109,11 @@ export function RrhhPage() {
       </div>
 
       <div className="rounded-xl bg-background ring-1 ring-foreground/10 p-6">
+        {activeTab === 'org-chart' && (
+          <OrgChart
+            onViewEmployee={(id) => setEmployeeDetailDrawer({ open: true, employeeId: id })}
+          />
+        )}
         {activeTab === 'employees' && (
           <EmployeeList
             onEdit={(id) => setEmployeeDrawer({ open: true, mode: 'edit', employeeId: id })}

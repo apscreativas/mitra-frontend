@@ -12,7 +12,7 @@ interface TabConfig {
 }
 
 const tabs: TabConfig[] = [
-  { id: 'org-chart', label: labels.rrhh.tabs.orgChart, icon: Network, disabled: true },
+  { id: 'org-chart', label: labels.rrhh.tabs.orgChart, icon: Network, disabled: false },
   { id: 'employees', label: labels.rrhh.tabs.employees, icon: Users, disabled: false },
   { id: 'positions', label: labels.rrhh.tabs.positions, icon: Briefcase, disabled: false },
   { id: 'areas', label: labels.rrhh.tabs.areas, icon: Building2, disabled: false },
