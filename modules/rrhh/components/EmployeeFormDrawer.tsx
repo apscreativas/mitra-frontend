@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
+import Image from 'next/image'
 import { Camera, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import {
@@ -9,8 +10,6 @@ import {
   FormDrawerHeader,
   FormDrawerTitle,
 } from '@/components/ui/form-drawer'
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import { LoadingState } from '@/components/ui/states'
 import { labels } from '@/lib/labels'
 import { useEmployee, useUploadEmployeeAvatar, useDeleteEmployeeAvatar } from '../hooks/use-employees'
@@ -80,49 +79,58 @@ export function EmployeeFormDrawer({ open, onOpenChange, mode, employeeId }: Emp
             <>
               {/* Avatar section — only in edit mode (user exists) */}
               {isEdit && employee && (
-                <div className="flex items-center gap-4 px-6 pb-4">
-                  <Avatar size="lg">
-                    {employee.avatar_url && <AvatarImage src={employee.avatar_url} alt={employee.name} />}
-                    <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-                      {initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        <Camera className="h-3.5 w-3.5" />
-                        {employee.avatar_url ? labels.users.avatar.replace : labels.users.avatar.upload}
-                      </Button>
-                      {employee.avatar_url && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="text-destructive hover:text-destructive"
-                          onClick={async () => {
-                            try {
-                              await deleteAvatar.mutateAsync(employee.user_id)
-                              toast.success(labels.users.avatar.deleted)
-                              refetch()
-                            } catch (err: unknown) {
-                              toast.error(err instanceof Error ? err.message : labels.users.avatar.deleteError)
-                            }
-                          }}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                          {labels.users.avatar.delete}
-                        </Button>
+                <div className="flex flex-col items-center gap-2 px-6 pb-4">
+                  {/* Avatar with click-to-upload overlay */}
+                  <div className="group relative">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full ring-2 ring-foreground/5 transition-all hover:ring-primary/30"
+                    >
+                      {employee.avatar_url ? (
+                        <Image
+                          src={employee.avatar_url}
+                          alt={employee.name}
+                          fill
+                          unoptimized
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-primary text-primary-foreground text-lg font-medium">
+                          {initials}
+                        </div>
                       )}
-                    </div>
-                    <span className="text-[10px] text-muted-foreground">
-                      {labels.users.avatar.formats}
-                    </span>
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center rounded-full bg-foreground/0 transition-colors group-hover:bg-foreground/40">
+                        <Camera className="h-4 w-4 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+                      </div>
+                    </button>
+
+                    {/* Delete badge — only when photo exists */}
+                    {employee.avatar_url && (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            await deleteAvatar.mutateAsync(employee.user_id)
+                            toast.success(labels.users.avatar.deleted)
+                            refetch()
+                          } catch (err: unknown) {
+                            toast.error(err instanceof Error ? err.message : labels.users.avatar.deleteError)
+                          }
+                        }}
+                        className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-sm ring-2 ring-background transition-transform hover:scale-110"
+                        title={labels.users.avatar.delete}
+                      >
+                        <Trash2 className="h-2.5 w-2.5" />
+                      </button>
+                    )}
                   </div>
+
+                  {/* Hint text */}
+                  <span className="text-xs text-muted-foreground">
+                    {labels.users.avatar.formats}
+                  </span>
                 </div>
               )}
 
