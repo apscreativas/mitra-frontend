@@ -5,8 +5,8 @@ import type { Area } from '../types'
 
 interface OrgChartFiltersProps {
   areas: Area[]
-  selectedAreaId: number | null
-  onAreaChange: (areaId: number | null) => void
+  selectedAreaId: string | null
+  onAreaChange: (areaId: string | null) => void
   employeeStatus: 'all' | 'active' | 'blocked'
   onEmployeeStatusChange: (status: 'all' | 'active' | 'blocked') => void
 }
@@ -28,7 +28,7 @@ export function OrgChartFilters({
     <div className="flex flex-wrap items-center gap-3">
       <select
         value={selectedAreaId ?? ''}
-        onChange={(e) => onAreaChange(e.target.value ? Number(e.target.value) : null)}
+        onChange={(e) => onAreaChange(e.target.value || null)}
         className="rounded-lg border border-input bg-background px-3 py-1.5 text-sm text-foreground ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
       >
         <option value="">{labels.rrhh.orgChart.allAreas}</option>

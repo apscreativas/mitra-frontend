@@ -87,8 +87,11 @@ export function OrgChartNodeDetailDrawer({
                           {employee.name}
                         </span>
                         <Badge
-                          variant={employee.status === 'active' ? 'default' : 'destructive'}
-                          className="h-4 text-[9px] px-1.5"
+                          className={`h-4 text-[9px] px-1.5 ${
+                            employee.status === 'active'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200 border'
+                              : 'bg-destructive/10 text-destructive'
+                          }`}
                         >
                           {employee.status === 'active'
                             ? labels.rrhh.employees.statuses.active

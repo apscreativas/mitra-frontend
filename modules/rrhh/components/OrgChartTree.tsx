@@ -6,11 +6,11 @@ import { OrgChartNode } from './OrgChartNode'
 import styles from './org-chart-tree.module.css'
 
 interface ProcessedNode {
-  id: number
+  id: string
   name: string
-  areaId: number
+  areaId: string
   areaName: string
-  reportsToId: number | null
+  reportsToId: string | null
   authorizedPositions: number
   allEmployeeCount: number
   employees: OrgChartEmployee[]
@@ -19,17 +19,17 @@ interface ProcessedNode {
 
 interface OrgChartTreeProps {
   nodes: OrgChartNodeType[]
-  selectedAreaId: number | null
+  selectedAreaId: string | null
   employeeStatus: 'all' | 'active' | 'blocked'
-  onNodeClick: (positionId: number) => void
+  onNodeClick: (positionId: string) => void
 }
 
 function buildTrees(
   nodes: OrgChartNodeType[],
-  selectedAreaId: number | null,
+  selectedAreaId: string | null,
   employeeStatus: 'all' | 'active' | 'blocked'
 ): ProcessedNode[] {
-  const nodeMap = new Map<number, ProcessedNode>()
+  const nodeMap = new Map<string, ProcessedNode>()
   for (const node of nodes) {
     const displayEmployees =
       employeeStatus === 'all'
@@ -59,14 +59,14 @@ function buildTrees(
   }
 
   if (selectedAreaId !== null) {
-    const matchingIds = new Set<number>()
+    const matchingIds = new Set<string>()
     for (const node of nodeMap.values()) {
       if (node.areaId === selectedAreaId) {
         matchingIds.add(node.id)
       }
     }
 
-    const ancestorIds = new Set<number>()
+    const ancestorIds = new Set<string>()
     for (const id of matchingIds) {
       let current = nodeMap.get(id)
       while (current?.reportsToId && nodeMap.has(current.reportsToId)) {
@@ -108,8 +108,8 @@ function buildTrees(
   return roots
 }
 
-function getInitialExpanded(roots: ProcessedNode[]): Set<number> {
-  const expanded = new Set<number>()
+function getInitialExpanded(roots: ProcessedNode[]): Set<string> {
+  const expanded = new Set<string>()
   function walk(node: ProcessedNode, depth: number) {
     if (depth < 2) {
       expanded.add(node.id)
@@ -130,7 +130,7 @@ export function OrgChartTree({ nodes, selectedAreaId, employeeStatus, onNodeClic
     [nodes, selectedAreaId, employeeStatus]
   )
 
-  const [expandedIds, setExpandedIds] = useState<Set<number>>(() => getInitialExpanded(trees))
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => getInitialExpanded(trees))
 
   const [prevTreeKey, setPrevTreeKey] = useState(() => `${selectedAreaId}-${employeeStatus}`)
   const treeKey = `${selectedAreaId}-${employeeStatus}`
@@ -146,7 +146,7 @@ export function OrgChartTree({ nodes, selectedAreaId, employeeStatus, onNodeClic
     })
   }
 
-  const toggleExpand = useCallback((id: number) => {
+  const toggleExpand = useCallback((id: string) => {
     setExpandedIds((prev) => {
       const next = new Set(prev)
       if (next.has(id)) {

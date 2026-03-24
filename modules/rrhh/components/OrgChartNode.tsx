@@ -35,7 +35,7 @@ export function OrgChartNode({
       <button
         type="button"
         onClick={onClick}
-        className="group relative flex w-[220px] cursor-pointer flex-col rounded-xl bg-background p-3 ring-1 ring-foreground/10 transition-all hover:ring-primary/30 hover:shadow-md"
+        className="group relative flex w-[220px] cursor-pointer flex-col rounded-xl bg-background p-3 ring-1 ring-foreground/10 transition-all hover:ring-primary/30"
       >
         {/* Position header */}
         <div className="mb-2 flex items-center justify-between gap-2">

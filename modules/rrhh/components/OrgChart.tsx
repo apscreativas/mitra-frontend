@@ -17,9 +17,9 @@ export function OrgChart({ onViewEmployee }: OrgChartProps) {
   const { data, isLoading, isError, error, refetch } = useOrgChart()
   const { data: areasData } = useAreas({ per_page: 100, 'filter[status]': 'active' })
 
-  const [selectedAreaId, setSelectedAreaId] = useState<number | null>(null)
+  const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null)
   const [employeeStatus, setEmployeeStatus] = useState<'all' | 'active' | 'blocked'>('all')
-  const [detailDrawer, setDetailDrawer] = useState<{ open: boolean; positionId: number | null }>({
+  const [detailDrawer, setDetailDrawer] = useState<{ open: boolean; positionId: string | null }>({
     open: false,
     positionId: null,
   })
@@ -32,7 +32,7 @@ export function OrgChart({ onViewEmployee }: OrgChartProps) {
     return nodes.find((n) => n.id === detailDrawer.positionId) ?? null
   }, [nodes, detailDrawer.positionId])
 
-  const handleNodeClick = useCallback((positionId: number) => {
+  const handleNodeClick = useCallback((positionId: string) => {
     setDetailDrawer({ open: true, positionId })
   }, [])
 

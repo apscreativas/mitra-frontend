@@ -216,17 +216,17 @@ export interface DocumentFormProps {
 
 // Org Chart types
 export interface OrgChartEmployee {
-  id: number
+  id: string
   name: string
   status: 'active' | 'blocked'
 }
 
 export interface OrgChartNode {
-  id: number
+  id: string
   name: string
-  area_id: number
+  area_id: string
   area_name: string
-  reports_to_id: number | null
+  reports_to_id: string | null
   authorized_positions: number
   employees: OrgChartEmployee[]
 }
