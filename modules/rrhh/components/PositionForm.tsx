@@ -220,8 +220,9 @@ export function PositionForm({ defaultValues, positionId, mode, formId = 'positi
             ) : (
               <div className="space-y-2">
                 {allDocuments.map((doc) => {
-                  const selected = isDocumentSelected(doc.id)
-                  const currentDoc = fields.find((f) => f.document_id === doc.id)
+                  const docId = String(doc.id)
+                  const selected = isDocumentSelected(docId)
+                  const currentDoc = fields.find((f) => f.document_id === docId)
                   return (
                     <div
                       key={doc.id}
@@ -231,7 +232,7 @@ export function PositionForm({ defaultValues, positionId, mode, formId = 'positi
                         <Checkbox
                           checked={selected}
                           onCheckedChange={() =>
-                            toggleDocument(doc.id, doc.is_required_by_default)
+                            toggleDocument(docId, doc.is_required_by_default)
                           }
                         />
                         <span className="text-sm">{doc.name}</span>
@@ -247,7 +248,7 @@ export function PositionForm({ defaultValues, positionId, mode, formId = 'positi
                             size="sm"
                             checked={currentDoc?.is_required ?? false}
                             onCheckedChange={(checked) =>
-                              setDocumentRequired(doc.id, checked)
+                              setDocumentRequired(docId, checked)
                             }
                           />
                         </div>
