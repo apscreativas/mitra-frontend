@@ -33,6 +33,15 @@ export const employeeColumns: ColumnDef<Employee>[] = [
     },
   },
   {
+    accessorKey: 'seniority_years',
+    header: labels.rrhh.employees.fields.seniority,
+    enableSorting: false,
+    cell: ({ row }) => {
+      const years = row.original.seniority_years
+      return years != null ? `${years.toFixed(1)} ${labels.rrhh.employees.seniorityYears}` : '—'
+    },
+  },
+  {
     accessorKey: 'location',
     header: labels.rrhh.employees.fields.location,
     enableSorting: false,

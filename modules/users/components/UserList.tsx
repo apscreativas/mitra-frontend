@@ -31,6 +31,11 @@ export function UserList({ roleOptions = [], onView, onEdit }: UserListProps) {
 
   const filterOptions: Record<string, { label: string; value: string }[]> = {
     role: roleOptions,
+    status: [
+      { label: labels.users.statuses.active, value: 'active' },
+      { label: labels.users.statuses.inactive, value: 'inactive' },
+      { label: labels.users.statuses.blocked, value: 'blocked' },
+    ],
   }
 
   if (error) return <ErrorState error={error} onRetry={refetch} />

@@ -122,7 +122,7 @@ export const labels = {
   },
   users: {
     title: 'Usuarios',
-    titleFull: 'Usuarios y RBAC',
+    titleFull: 'Usuarios',
     invite: 'Agregar',
     create: 'Crear usuario',
     created: 'Usuario creado exitosamente.',
