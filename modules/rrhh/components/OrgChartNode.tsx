@@ -39,8 +39,8 @@ export function OrgChartNode({
         className="group relative flex w-[220px] cursor-pointer flex-col rounded-xl bg-background p-3 ring-1 ring-foreground/10 transition-all hover:ring-primary/30"
       >
         {/* Position header */}
-        <div className="mb-2 flex items-center justify-between gap-2">
-          <span className="text-[13px] font-semibold leading-tight text-foreground">
+        <div className="mb-2 flex items-center justify-between gap-2 min-w-0">
+          <span className="truncate text-[13px] font-semibold leading-tight text-foreground" title={positionName}>
             {positionName}
           </span>
           <Badge variant="secondary" className="shrink-0 px-1.5 py-0 text-[9px] font-medium">
@@ -64,7 +64,7 @@ export function OrgChartNode({
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col items-start gap-0.5">
-                <span className="text-xs font-medium text-foreground">
+                <span className="max-w-[110px] truncate text-xs font-medium text-foreground" title={primaryEmployee.name}>
                   {primaryEmployee.name}
                 </span>
                 <span
