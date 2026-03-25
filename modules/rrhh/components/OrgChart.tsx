@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
-import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react'
+import { ZoomIn, ZoomOut, Maximize2, Minimize2 } from 'lucide-react'
 import { labels } from '@/lib/labels'
 import { LoadingState, EmptyState, ErrorState } from '@/components/ui/states'
 import { useOrgChart } from '../hooks/use-org-chart'
@@ -60,6 +60,27 @@ export function OrgChart({ onViewEmployee }: OrgChartProps) {
     setPan({ x: 0, y: 0 })
   }, [])
 
+  // Fullscreen
+  const fullscreenRef = useRef<HTMLDivElement>(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  const toggleFullscreen = useCallback(() => {
+    if (!fullscreenRef.current) return
+    if (!document.fullscreenElement) {
+      fullscreenRef.current.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
+  }, [])
+
+  useEffect(() => {
+    function onFsChange() {
+      setIsFullscreen(!!document.fullscreenElement)
+    }
+    document.addEventListener('fullscreenchange', onFsChange)
+    return () => document.removeEventListener('fullscreenchange', onFsChange)
+  }, [])
+
   // Mouse wheel zoom
   useEffect(() => {
     const el = containerRef.current
@@ -105,7 +126,7 @@ export function OrgChart({ onViewEmployee }: OrgChartProps) {
   const zoomPercent = Math.round(zoom * 100)
 
   return (
-    <div className="space-y-4">
+    <div ref={fullscreenRef} className={`space-y-4 ${isFullscreen ? 'bg-background p-4' : ''}`}>
       <div className="flex flex-wrap items-center gap-3">
         <OrgChartFilters
           areas={areas}
@@ -143,11 +164,11 @@ export function OrgChart({ onViewEmployee }: OrgChartProps) {
           <div className="mx-0.5 h-4 w-px bg-foreground/10" />
           <button
             type="button"
-            onClick={handleReset}
+            onClick={toggleFullscreen}
             className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
-            title="Reset"
+            title={isFullscreen ? labels.rrhh.orgChart.collapse : labels.rrhh.orgChart.expand}
           >
-            <Maximize2 className="h-3.5 w-3.5" />
+            {isFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
           </button>
         </div>
       </div>
@@ -157,7 +178,7 @@ export function OrgChart({ onViewEmployee }: OrgChartProps) {
         ref={containerRef}
         data-org-chart-bg
         className="relative select-none overflow-hidden rounded-lg border border-border/50 bg-muted/30"
-        style={{ height: 'calc(100vh - 460px)', minHeight: '300px', cursor: isPanning ? 'grabbing' : 'grab' }}
+        style={{ height: isFullscreen ? 'calc(100vh - 120px)' : 'calc(100vh - 460px)', minHeight: '300px', cursor: isPanning ? 'grabbing' : 'grab' }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
