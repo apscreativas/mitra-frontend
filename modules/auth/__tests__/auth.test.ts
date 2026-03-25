@@ -7,11 +7,17 @@ import { useLogin, useForgotPassword, useResetPassword, useChangePassword } from
 const API = 'http://localhost/api'
 
 describe('Auth hooks', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
   describe('useLogin', () => {
-    it('calls login endpoint', async () => {
+    it('calls login endpoint and stores token', async () => {
       server.use(
         http.post(`${API}/login`, () =>
-          HttpResponse.json({ data: { id: '1', name: 'Test', email: 'test@test.com' } })
+          HttpResponse.json({
+            data: { id: '1', name: 'Test', email: 'test@test.com', token: 'test-token-123' },
+          })
         )
       )
 
@@ -20,15 +26,15 @@ describe('Auth hooks', () => {
       result.current.mutate({ email: 'test@test.com', password: 'password' })
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true))
+
+      expect(localStorage.getItem('auth_token')).toBe('test-token-123')
     })
   })
 
   describe('useForgotPassword', () => {
     it('calls forgot-password endpoint', async () => {
       server.use(
-        http.post(`${API}/forgot-password`, () =>
-          HttpResponse.json({ message: 'Sent' })
-        )
+        http.post(`${API}/forgot-password`, () => HttpResponse.json({ message: 'Sent' }))
       )
 
       const { result } = renderHook(() => useForgotPassword(), { wrapper: createWrapper() })
@@ -42,9 +48,7 @@ describe('Auth hooks', () => {
   describe('useResetPassword', () => {
     it('calls reset-password endpoint', async () => {
       server.use(
-        http.post(`${API}/reset-password`, () =>
-          HttpResponse.json({ message: 'Reset' })
-        )
+        http.post(`${API}/reset-password`, () => HttpResponse.json({ message: 'Reset' }))
       )
 
       const { result } = renderHook(() => useResetPassword(), { wrapper: createWrapper() })
@@ -63,9 +67,7 @@ describe('Auth hooks', () => {
   describe('useChangePassword', () => {
     it('calls change-password endpoint', async () => {
       server.use(
-        http.put(`${API}/user/password`, () =>
-          HttpResponse.json({ message: 'Changed' })
-        )
+        http.put(`${API}/user/password`, () => HttpResponse.json({ message: 'Changed' }))
       )
 
       const { result } = renderHook(() => useChangePassword(), { wrapper: createWrapper() })
