@@ -47,6 +47,17 @@ npx tsx scripts/make-module.ts --name={module} --entity={Entity}
 
 Generates a 10-file module. See `ARCHITECTURE.md` for full structure.
 
+## Environment Variables for Deploy
+
+Variables required in production (AWS Amplify):
+
+| Variable | Description | Example |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | Backend API base URL | `https://api.mitra.example.com` |
+| `NEXT_PUBLIC_APP_NAME` | Application display name | `Mitra` |
+
+Set these in the Amplify Console under **App settings → Environment variables**. Variables prefixed with `NEXT_PUBLIC_` are embedded at build time and exposed to the browser.
+
 ## Architecture
 
 - **Routing:** File-based via `app/` directory
