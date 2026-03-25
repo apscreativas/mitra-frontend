@@ -108,6 +108,12 @@ export const labels = {
     loginFailed: 'Credenciales inválidas.',
     passwordChanged: 'Contraseña actualizada exitosamente.',
   },
+  comingSoon: {
+    title: 'Módulo en desarrollo',
+    description: 'Este módulo estará disponible próximamente.',
+    estimatedDate: 'Fecha estimada de disponibilidad',
+    noDate: 'Por definir',
+  },
   branding: {
     appName: 'Mitra ERP',
     headline: 'Gestión integral para tu industria',
