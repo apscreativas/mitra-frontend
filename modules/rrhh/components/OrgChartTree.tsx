@@ -12,7 +12,7 @@ interface ProcessedNode {
   areaName: string
   reportsToId: string | null
   authorizedPositions: number
-  allEmployeeCount: number
+  activeEmployeeCount: number
   employees: OrgChartEmployee[]
   children: ProcessedNode[]
 }
@@ -44,7 +44,7 @@ function buildTrees(
       areaName: node.area_name,
       reportsToId: node.reports_to_id ? String(node.reports_to_id) : null,
       authorizedPositions: node.authorized_positions,
-      allEmployeeCount: node.employees.length,
+      activeEmployeeCount: node.employees.filter((e) => e.status === 'active').length,
       employees: displayEmployees,
       children: [],
     })
@@ -96,7 +96,7 @@ function buildTrees(
         .map((child) => pruneEmpty(child))
         .filter((child): child is ProcessedNode => child !== null)
 
-      const vacancies = node.authorizedPositions - node.allEmployeeCount
+      const vacancies = node.authorizedPositions - node.activeEmployeeCount
       const hasContent = node.employees.length > 0 || vacancies > 0 || node.children.length > 0
       return hasContent ? node : null
     }
@@ -161,7 +161,7 @@ export function OrgChartTree({ nodes, selectedAreaId, employeeStatus, onNodeClic
 
   function renderNode(node: ProcessedNode) {
     const isExpanded = expandedIds.has(node.id)
-    const vacancies = Math.max(0, node.authorizedPositions - node.allEmployeeCount)
+    const vacancies = Math.max(0, node.authorizedPositions - node.activeEmployeeCount)
     const showChildren = isExpanded && node.children.length > 0
 
     return (
@@ -195,7 +195,7 @@ export function OrgChartTree({ nodes, selectedAreaId, employeeStatus, onNodeClic
               positionName={root.name}
               areaName={root.areaName}
               employees={root.employees}
-              vacancies={Math.max(0, root.authorizedPositions - root.allEmployeeCount)}
+              vacancies={Math.max(0, root.authorizedPositions - root.activeEmployeeCount)}
               hasChildren={root.children.length > 0}
               isExpanded={expandedIds.has(root.id)}
               onToggleExpand={() => toggleExpand(root.id)}
