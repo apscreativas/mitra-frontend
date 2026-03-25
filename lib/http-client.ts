@@ -1,4 +1,5 @@
 import { env } from '@/config/env'
+import { tokenStorage } from '@/lib/token-storage'
 
 // --- Error types ---
 
@@ -23,27 +24,6 @@ export class NetworkError extends Error {
   }
 }
 
-// --- CSRF cookie management ---
-
-let csrfInitialized = false
-
-async function ensureCsrfCookie(): Promise<void> {
-  if (csrfInitialized) return
-
-  const baseUrl = env.NEXT_PUBLIC_API_URL.replace(/\/api$/, '')
-  await fetch(`${baseUrl}/sanctum/csrf-cookie`, {
-    method: 'GET',
-    credentials: 'include',
-  })
-
-  csrfInitialized = true
-}
-
-function getXsrfToken(): string {
-  const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/)
-  return match ? decodeURIComponent(match[1]) : ''
-}
-
 // --- Core request function ---
 
 type RequestOptions = {
@@ -57,12 +37,6 @@ async function request<T>(
   data?: unknown,
   options?: RequestOptions
 ): Promise<T> {
-  const isMutation = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)
-
-  if (isMutation) {
-    await ensureCsrfCookie()
-  }
-
   const fullUrl = new URL(`${env.NEXT_PUBLIC_API_URL}${url}`)
 
   if (options?.params) {
@@ -78,8 +52,9 @@ async function request<T>(
     ...options?.headers,
   }
 
-  if (isMutation) {
-    headers['X-XSRF-TOKEN'] = getXsrfToken()
+  const token = tokenStorage.get()
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
   }
 
   if (data && !(data instanceof FormData)) {
@@ -92,32 +67,18 @@ async function request<T>(
     response = await fetch(fullUrl.toString(), {
       method,
       headers,
-      credentials: 'include',
       body: data ? (data instanceof FormData ? data : JSON.stringify(data)) : undefined,
     })
   } catch {
     throw new NetworkError()
   }
 
-  // Handle CSRF token expiry — retry once
-  if (response.status === 419) {
-    csrfInitialized = false
-    await ensureCsrfCookie()
-    headers['X-XSRF-TOKEN'] = getXsrfToken()
-
-    try {
-      response = await fetch(fullUrl.toString(), {
-        method,
-        headers,
-        credentials: 'include',
-        body: data ? (data instanceof FormData ? data : JSON.stringify(data)) : undefined,
-      })
-    } catch {
-      throw new NetworkError()
-    }
-  }
-
   if (!response.ok) {
+    // Clear token on 401 — it's invalid or expired
+    if (response.status === 401) {
+      tokenStorage.clear()
+    }
+
     const body = await response.json().catch(() => ({}))
     throw new ApiError(
       response.status,
