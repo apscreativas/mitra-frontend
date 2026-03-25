@@ -36,12 +36,18 @@ function useHasToken() {
 export function useUser() {
   const hasToken = useHasToken()
 
-  return useQuery({
+  const query = useQuery({
     queryKey: userKeys.current,
     queryFn: () => httpClient.get<{ data: User }>('/user').then((res) => res.data),
     retry: false,
     enabled: hasToken === true,
   })
+
+  // While still checking localStorage (SSR/hydration), report as loading
+  // so layouts don't redirect prematurely.
+  const isLoading = hasToken === undefined || query.isLoading
+
+  return { ...query, isLoading }
 }
 
 export function useLogout() {
