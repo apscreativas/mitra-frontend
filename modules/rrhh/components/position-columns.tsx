@@ -29,11 +29,9 @@ export const positionColumns: ColumnDef<Position>[] = [
     cell: ({ row }) => {
       const occupied = row.original.occupied_positions
       const authorized = row.original.authorized_positions
-      const ratio = authorized > 0 ? occupied / authorized : 0
-      const isNearFull = ratio >= 0.8 && occupied < authorized
-      const isFull = occupied >= authorized
+      const hasVacancies = authorized > 0 && occupied < authorized
       return (
-        <span className={isFull ? 'text-destructive font-medium' : isNearFull ? 'text-amber-700 font-medium' : ''}>
+        <span className={hasVacancies ? 'text-destructive font-medium' : ''}>
           {occupied} / {authorized}
         </span>
       )
